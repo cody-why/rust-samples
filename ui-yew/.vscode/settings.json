@@ -1,0 +1,7 @@
+{
+    // rust语言添加html的自动补全
+    "emmet.includeLanguages": {
+        "rust": "html",
+    },
+    "css.lint.unknownAtRules": "ignore"
+}

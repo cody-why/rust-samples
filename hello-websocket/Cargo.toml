@@ -1,0 +1,15 @@
+[package]
+name = "hello-websocket"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio-tungstenite = "*"
+tokio = {version="*", features=["full"]}
+dashmap = "*"
+log= "*"
+futures-util = { version = "0.3", default-features = false, features = ["sink", "std"] }
+env_logger = "*"
+url = "*"

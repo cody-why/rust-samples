@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My App</title>
+   <!-- trunk自动复制css -->
+    <link data-trunk rel="css" href="assets/app.css">
+   
+  </head>
+  <body>
+    <div id="main"> </div>
+    <script>
+      window.onresize = function(){
+          var scale = window.innerWidth / 1100;
+          document.body.style.transform = 'scale(' + scale + ')';
+          document.body.style.transformOrigin = 'top';
+      }
+      window.onresize();
+     
+  </script>
+  </body>
+</html>

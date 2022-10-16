@@ -1,0 +1,14 @@
+[package]
+name = "mymacro"
+version = "0.1.0"
+edition = "2021"
+
+#过程宏需要设置这个
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = "1.*"
+syn = {version="1.*",features=["full","extra-traits"]}
+quote = "1.*"
+

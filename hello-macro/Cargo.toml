@@ -1,0 +1,6 @@
+[workspace]
+members = [
+	"mymacro",
+	"main",
+	"mymacro_rules",
+]
