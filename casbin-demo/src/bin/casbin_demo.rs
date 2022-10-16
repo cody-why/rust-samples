@@ -5,6 +5,8 @@
  * @Description: casbin的测试,在线生成规则:
  * https://casbin.org/zh-CN/editor
  */
+#[macro_use]
+extern crate lazy_static;
 
 use std::collections::HashMap;
 
@@ -12,8 +14,6 @@ use sqlx_adapter::casbin::prelude::*;
 use sqlx_adapter::casbin::Result; 
 use sqlx_adapter::{casbin::{DefaultModel,Enforcer}, SqlxAdapter};
 
-#[macro_use]
-extern crate lazy_static;
 
 
 lazy_static! {
