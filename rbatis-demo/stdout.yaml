@@ -1,0 +1,856 @@
+............gen macro py_sql :
+ pub async fn insert_batch(
+    rb: &mut dyn rbatis::executor::Executor,
+    tables: &[BizActivity],
+    table_name: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "tables".to_string().into(),
+        rbs::to_value(tables).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(49usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "insert into ${table_name} ("
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        sql.push_str("");
+        sql.push_str(&{
+            let mut sql = String::with_capacity(5usize);
+            for (k, v) in { &arg["tables"][0] } {
+                if {
+                    bool::op_from((k).op_eq(&"id")) && bool::op_from((v).op_eq(&rbs::Value::Null))
+                }
+                .to_owned()
+                .into()
+                {
+                    continue;
+                }
+                sql.push_str("${k},".replacen("${k}", &{ k }.as_sql(), 1).as_str());
+            }
+            sql = sql
+                .trim_start_matches(",")
+                .trim_end_matches(",")
+                .to_string();
+            sql
+        });
+        sql.push_str("");
+        sql.push_str(") VALUES ");
+        sql.push_str("");
+        sql.push_str(&{
+            let mut sql = String::with_capacity(8usize);
+            for (_, table) in { &arg["tables"] } {
+                sql.push_str("(");
+                sql.push_str("");
+                sql.push_str(&{
+                    let mut sql = String::with_capacity(5usize);
+                    for (k, v) in { table } {
+                        if {
+                            bool::op_from((k).op_eq(&"id"))
+                                && bool::op_from((v).op_eq(&rbs::Value::Null))
+                        }
+                        .to_owned()
+                        .into()
+                        {
+                            continue;
+                        }
+                        args.push(rbs::to_value({ v }).unwrap_or_default());
+                        sql.push_str("?,");
+                    }
+                    sql = sql
+                        .trim_start_matches(",")
+                        .trim_end_matches(",")
+                        .to_string();
+                    sql
+                });
+                sql.push_str("");
+                sql.push_str("),");
+            }
+            sql = sql
+                .trim_start_matches(",")
+                .trim_end_matches(",")
+                .to_string();
+            sql
+        });
+        sql.push_str("");
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_all(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+) -> std::result::Result<Vec<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(27usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "select * from ${table_name}"
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_by_column(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    column: &str,
+    column_value: &rbs::Value,
+) -> std::result::Result<Vec<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column".to_string().into(),
+        rbs::to_value(column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column_value".to_string().into(),
+        rbs::to_value(column_value).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(61usize);
+        let mut args = Vec::with_capacity(20);
+        args.push(rbs::to_value({ &arg["column_value"] }).unwrap_or_default());
+        sql.push_str(
+            "select * from ${table_name} where ${column} = ?"
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .replacen("${column}", &{ &arg["column"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn update_by_column(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    table: &rbs::Value,
+    column_value: &rbs::Value,
+    column: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table".to_string().into(),
+        rbs::to_value(table).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column_value".to_string().into(),
+        rbs::to_value(column_value).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column".to_string().into(),
+        rbs::to_value(column).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(70usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "update ${table_name} set "
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        sql.push_str("");
+        sql.push_str(&{
+            let mut sql = String::with_capacity(10usize);
+            for (k, v) in { &arg["table"] } {
+                if {
+                    bool::op_from((k).op_eq(&&arg["column"]))
+                        || bool::op_from((v).op_eq(&rbs::Value::Null))
+                }
+                .to_owned()
+                .into()
+                {
+                    continue;
+                }
+                args.push(rbs::to_value({ v }).unwrap_or_default());
+                sql.push_str("${k}=?,".replacen("${k}", &{ k }.as_sql(), 1).as_str());
+            }
+            sql = sql
+                .trim_start_matches(",")
+                .trim_end_matches(",")
+                .to_string();
+            sql
+        });
+        sql.push_str("");
+        args.push(rbs::to_value({ &arg["column_value"] }).unwrap_or_default());
+        sql.push_str(
+            " where  ${column} = ?"
+                .replacen("${column}", &{ &arg["column"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn delete_by_column(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    column_value: &rbs::Value,
+    column: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column_value".to_string().into(),
+        rbs::to_value(column_value).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column".to_string().into(),
+        rbs::to_value(column).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(60usize);
+        let mut args = Vec::with_capacity(20);
+        args.push(rbs::to_value({ &arg["column_value"] }).unwrap_or_default());
+        sql.push_str(
+            "delete from ${table_name} where  ${column} = ?"
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .replacen("${column}", &{ &arg["column"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn delete_by_column_batch(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    column_values: rbs::Value,
+    column: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column_values".to_string().into(),
+        rbs::to_value(column_values).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "column".to_string().into(),
+        rbs::to_value(column).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(53usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "delete from ${table_name} where  ${column} in ("
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .replacen("${column}", &{ &arg["column"] }.as_sql(), 1)
+                .as_str(),
+        );
+        sql.push_str("");
+        sql.push_str(&{
+            let mut sql = String::with_capacity(5usize);
+            for (_, v) in { &arg["column_values"] } {
+                args.push(rbs::to_value({ v }).unwrap_or_default());
+                sql.push_str("?,");
+            }
+            sql = sql
+                .trim_start_matches(",")
+                .trim_end_matches(",")
+                .to_string();
+            sql
+        });
+        sql.push_str("");
+        sql.push_str(")");
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_all_by_id(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+    id: &str,
+    name: &str,
+) -> std::result::Result<Vec<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "id".to_string().into(),
+        rbs::to_value(id).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "name".to_string().into(),
+        rbs::to_value(name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(77usize);
+        let mut args = Vec::with_capacity(20);
+        args.push(rbs::to_value({ &arg["id"] }).unwrap_or_default());
+        args.push(rbs::to_value({ &arg["name"] }).unwrap_or_default());
+        sql.push_str(
+            "select ${table_column} from ${table_name} where id = ? and name = ?"
+                .replacen("${table_column}", &{ &arg["table_column"] }.as_sql(), 1)
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_by_id(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+    id: &str,
+) -> std::result::Result<Option<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "id".to_string().into(),
+        rbs::to_value(id).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(66usize);
+        let mut args = Vec::with_capacity(20);
+        args.push(rbs::to_value({ &arg["id"] }).unwrap_or_default());
+        sql.push_str(
+            "select ${table_column} from ${table_name} where id = ? limit 1"
+                .replacen("${table_column}", &{ &arg["table_column"] }.as_sql(), 1)
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn update_by_name(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    table: &rbs::Value,
+    name: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table".to_string().into(),
+        rbs::to_value(table).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "name".to_string().into(),
+        rbs::to_value(name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(51usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "update ${table_name} set  "
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        sql.push_str("");
+        sql.push_str(&{
+            let mut sql = String::with_capacity(10usize);
+            for (k, v) in { &arg["table"] } {
+                if {
+                    bool::op_from((k).op_eq(&&arg["column"]))
+                        || bool::op_from((v).op_eq(&rbs::Value::Null))
+                }
+                .to_owned()
+                .into()
+                {
+                    continue;
+                }
+                args.push(rbs::to_value({ v }).unwrap_or_default());
+                sql.push_str("${k}=?,".replacen("${k}", &{ k }.as_sql(), 1).as_str());
+            }
+            sql = sql
+                .trim_start_matches(",")
+                .trim_end_matches(",")
+                .to_string();
+            sql
+        });
+        sql.push_str("");
+        sql.push_str(" where id = '2'");
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn delete_by_name(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_name: String,
+    name: &str,
+) -> std::result::Result<rbatis::rbdc::db::ExecResult, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "name".to_string().into(),
+        rbs::to_value(name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(41usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "delete from ${table_name} where name= '2'"
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    rb.exec(&sql, rb_args).await
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_page(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+) -> std::result::Result<u64, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(69usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "select count(1) as count from ${table_name} "
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        if { !sql.contains("count") }.to_owned().into() {
+            sql.push_str("order by create_time desc");
+        }
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_page(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+    page_no: u64,
+    page_size: u64,
+) -> std::result::Result<Vec<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "page_no".to_string().into(),
+        rbs::to_value(page_no).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "page_size".to_string().into(),
+        rbs::to_value(page_size).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(97usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "select ${table_column} from ${table_name} "
+                .replacen("${table_column}", &{ &arg["table_column"] }.as_sql(), 1)
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        if { !sql.contains("count") }.to_owned().into() {
+            sql.push_str("order by create_time desc");
+            if {
+                bool::op_from(!sql.contains("page_no")) && bool::op_from(!sql.contains("page_size"))
+            }
+            .to_owned()
+            .into()
+            {
+                sql.push_str(
+                    " limit ${page_no},${page_size}"
+                        .replacen("${page_no}", &{ &arg["page_no"] }.as_sql(), 1)
+                        .replacen("${page_size}", &{ &arg["page_size"] }.as_sql(), 1)
+                        .as_str(),
+                );
+            }
+        }
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_page_by_name(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+    name: &str,
+) -> std::result::Result<u64, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "name".to_string().into(),
+        rbs::to_value(name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(81usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "select count(1) as count from ${table_name} "
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        if {
+            bool::op_from((&arg["name"]).op_ne(&rbs::Value::Null))
+                && bool::op_from((&arg["name"]).op_ne(&""))
+        }
+        .to_owned()
+        .into()
+        {
+            args.push(rbs::to_value({ &arg["name"] }).unwrap_or_default());
+            sql.push_str("where name != ?");
+        }
+        if { (&arg["name"]).op_eq(&"") }.to_owned().into() {
+            sql.push_str("where name != ''");
+        }
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+............gen macro py_sql :
+ pub async fn select_page_by_name(
+    rb: &mut dyn rbatis::executor::Executor,
+    table_column: &str,
+    table_name: &str,
+    page_no: u64,
+    page_size: u64,
+    name: &str,
+) -> std::result::Result<Vec<BizActivity>, rbatis::rbdc::Error> {
+    let mut rb_arg_map = rbs::value::map::ValueMap::new();
+    rb_arg_map.insert(
+        "table_column".to_string().into(),
+        rbs::to_value(table_column).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "table_name".to_string().into(),
+        rbs::to_value(table_name).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "page_no".to_string().into(),
+        rbs::to_value(page_no).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "page_size".to_string().into(),
+        rbs::to_value(page_size).unwrap_or_default(),
+    );
+    rb_arg_map.insert(
+        "name".to_string().into(),
+        rbs::to_value(name).unwrap_or_default(),
+    );
+    {}
+    use rbatis::executor::RbatisRef;
+    let driver_type = rb.get_rbatis().driver_type()?;
+    use rbatis::rbatis_codegen;
+    pub fn do_py_sql(arg: &rbs::Value, _tag: char) -> (String, Vec<rbs::Value>) {
+        use rbatis_codegen::ops::*;
+        let mut sql = String::with_capacity(109usize);
+        let mut args = Vec::with_capacity(20);
+        sql.push_str(
+            "select ${table_column} from ${table_name} "
+                .replacen("${table_column}", &{ &arg["table_column"] }.as_sql(), 1)
+                .replacen("${table_name}", &{ &arg["table_name"] }.as_sql(), 1)
+                .as_str(),
+        );
+        if {
+            bool::op_from((&arg["name"]).op_ne(&rbs::Value::Null))
+                && bool::op_from((&arg["name"]).op_ne(&""))
+        }
+        .to_owned()
+        .into()
+        {
+            args.push(rbs::to_value({ &arg["name"] }).unwrap_or_default());
+            sql.push_str("where name != ?");
+        }
+        if { (&arg["name"]).op_eq(&"") }.to_owned().into() {
+            sql.push_str("where name != ''");
+            if {
+                bool::op_from(!sql.contains("page_no")) && bool::op_from(!sql.contains("page_size"))
+            }
+            .to_owned()
+            .into()
+            {
+                sql.push_str(
+                    " limit ${page_no},${page_size}"
+                        .replacen("${page_no}", &{ &arg["page_no"] }.as_sql(), 1)
+                        .replacen("${page_size}", &{ &arg["page_size"] }.as_sql(), 1)
+                        .as_str(),
+                );
+            }
+        }
+        return (sql, args);
+    }
+    let (mut sql, rb_args) = do_py_sql(&rbs::Value::Map(rb_arg_map), '?');
+    use rbatis::executor::Executor;
+    let r = rb.fetch(&sql, rb_args).await?;
+    rbatis::decode::decode(r)
+}
+
+............gen macro py_sql end............
+    Finished dev [unoptimized + debuginfo] target(s) in 21.39s
+     Running `/tmp/rust/target/debug/rbatis-demo`
+2022-10-18 17:54:45.027811 DEBUG rustls::client::hs - No cached session for IpAddress(192.168.1.199)
+2022-10-18 17:54:45.027969 DEBUG rustls::client::hs - Not resuming any session
+2022-10-18 17:54:45.029686 DEBUG rustls::client::hs - Using ciphersuite TLS13_AES_256_GCM_SHA384
+2022-10-18 17:54:45.029705 DEBUG rustls::client::tls13 - Not resuming
+2022-10-18 17:54:45.030194 DEBUG rustls::client::tls13 - TLS1.3 encrypted extensions: []
+2022-10-18 17:54:45.03021 DEBUG rustls::client::hs - ALPN protocol is None
+2022-10-18 17:54:45.030266 DEBUG rustls::client::tls13 - Got CertificateRequest CertificateRequestPayloadTLS13 { context: , extensions: [SignatureAlgorithms([ECDSA_NISTP256_SHA256, ECDSA_NISTP384_SHA384, ECDSA_NISTP521_SHA512, ED25519, ED448, Unknown(2057), Unknown(2058), Unknown(2059), RSA_PSS_SHA256, RSA_PSS_SHA384, RSA_PSS_SHA512, RSA_PKCS1_SHA256, RSA_PKCS1_SHA384, RSA_PKCS1_SHA512, Unknown(771), Unknown(769)])] }
+2022-10-18 17:54:45.03029 DEBUG rustls::client::common - Client auth requested but no cert/sigscheme available
+2022-10-18 17:54:45.031401 DEBUG rustls::client::tls13 - Ticket saved
+2022-10-18 17:54:45.031553 DEBUG rustls::client::tls13 - Ticket saved
+2022-10-18 17:54:45.032142 INFO rbatis::plugin::log - [rbatis] [424868252355792896] Exec   ==> insert into biz_activity (id,name,pc_link,h5_link,pc_banner_img,h5_banner_img,sort,status,remark,create_time,version,delete_flag) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                                                      [rbatis]                      Args   ==> ["2","2","2","2",null,null,"2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1]
+insert = Ok(ExecResult { rows_affected: 1, last_insert_id: U64(0) })
+2022-10-18 17:54:45.035486 INFO rbatis::plugin::log - [rbatis] [424868252355792896] RowsAffected <== 1
+2022-10-18 17:54:45.035937 INFO rbatis::plugin::log - [rbatis] [424868252368375808] Exec   ==> delete from biz_activity where name= '2'
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.038473 INFO rbatis::plugin::log - [rbatis] [424868252368375808] RowsAffected <== 1
+2022-10-18 17:54:45.038856 INFO rbatis::plugin::log - [rbatis] [424868252380958720] Exec   ==> delete from biz_activity where name= '2'
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.039434 INFO rbatis::plugin::log - [rbatis] [424868252380958720] RowsAffected <== 0
+2022-10-18 17:54:45.040033 INFO rbatis::plugin::log - [rbatis] [424868252385153024] Exec   ==> insert into biz_activity (id,name,pc_link,h5_link,pc_banner_img,h5_banner_img,sort,status,remark,create_time,version,delete_flag) VALUES (?,?,?,?,?,?,?,?,?,?,?,?),(?,?,?,?,?,?,?,?,?,?,?,?)
+                                                      [rbatis]                      Args   ==> ["2","2","2","2",null,null,"2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1,"3","2","2","2",null,null,"2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1]
+insert_batch = Ok(ExecResult { rows_affected: 2, last_insert_id: U64(0) })
+2022-10-18 17:54:45.043342 INFO rbatis::plugin::log - [rbatis] [424868252385153024] RowsAffected <== 2
+2022-10-18 17:54:45.043852 INFO rbatis::plugin::log - [rbatis] [424868252401930240] Exec   ==> update biz_activity set name=?,pc_link=?,h5_link=?,sort=?,status=?,remark=?,create_time=?,version=?,delete_flag=? where  id = ?
+                                                      [rbatis]                      Args   ==> ["2","2","2","2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1,"2"]
+2022-10-18 17:54:45.045663 INFO rbatis::plugin::log - [rbatis] [424868252401930240] RowsAffected <== 1
+2022-10-18 17:54:45.046173 INFO rbatis::plugin::log - [rbatis] [424868252414513152] Exec   ==> update biz_activity set name=?,pc_link=?,h5_link=?,sort=?,status=?,remark=?,create_time=?,version=?,delete_flag=? where  id = ?
+                                                      [rbatis]                      Args   ==> ["2","2","2","2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1,"3"]
+update_by_column_batch = Ok(ExecResult { rows_affected: 2, last_insert_id: Null })
+2022-10-18 17:54:45.046758 INFO rbatis::plugin::log - [rbatis] [424868252414513152] RowsAffected <== 1
+2022-10-18 17:54:45.047258 INFO rbatis::plugin::log - [rbatis] [424868252418707456] Fetch  ==> select * from biz_activity where id = ? and name = ?
+                                                      [rbatis]                      Args   ==> ["1","1"]
+select_all_by_id = Ok([])
+2022-10-18 17:54:45.048861 INFO rbatis::plugin::log - [rbatis] [424868252418707456] ReturnRows <== 0
+2022-10-18 17:54:45.04888 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   alloc::vec::Vec<rbatis_demo::model::BizActivity> => []
+2022-10-18 17:54:45.049319 INFO rbatis::plugin::log - [rbatis] [424868252427096064] Fetch  ==> select * from biz_activity where id = ? limit 1
+                                                      [rbatis]                      Args   ==> ["1"]
+2022-10-18 17:54:45.050872 INFO rbatis::plugin::log - [rbatis] [424868252427096064] ReturnRows <== 1
+2022-10-18 17:54:45.050898 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   core::option::Option<rbatis_demo::model::BizActivity> => [{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2019-12-12 00:00:00"),"remark":"fff","version":1,"status":1,"sort":"1","h5_link":null,"pc_link":null,"name":"活动1","id":"1"}]
+select_by_id = Ok(Some(BizActivity { id: Some("1"), name: Some("活动1"), pc_link: None, h5_link: None, pc_banner_img: None, h5_banner_img: None, sort: Some("1"), status: Some(1), remark: Some("fff"), create_time: Some(DateTime(2019-12-12 00:00:00)), version: Some(1), delete_flag: Some(0) }))
+2022-10-18 17:54:45.051551 INFO rbatis::plugin::log - [rbatis] [424868252435484672] Exec   ==> update biz_activity set name=?,pc_link=?,h5_link=?,sort=?,status=?,remark=?,create_time=?,version=?,delete_flag=? where  id = ?
+                                                      [rbatis]                      Args   ==> ["2","2","2","2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1,"2"]
+update_by_column = Ok(ExecResult { rows_affected: 1, last_insert_id: U64(0) })
+2022-10-18 17:54:45.052131 INFO rbatis::plugin::log - [rbatis] [424868252435484672] RowsAffected <== 1
+2022-10-18 17:54:45.052642 INFO rbatis::plugin::log - [rbatis] [424868252439678976] Exec   ==> update biz_activity set  id=?,name=?,pc_link=?,h5_link=?,sort=?,status=?,remark=?,create_time=?,version=?,delete_flag=? where id = '2'
+                                                      [rbatis]                      Args   ==> ["2","2","2","2","2",2,"2",DateTime("2022-10-18 17:54:45.02592"),1,1]
+update_by_name = Ok(ExecResult { rows_affected: 1, last_insert_id: U64(0) })
+2022-10-18 17:54:45.053805 INFO rbatis::plugin::log - [rbatis] [424868252439678976] RowsAffected <== 1
+2022-10-18 17:54:45.054218 INFO rbatis::plugin::log - [rbatis] [424868252448067584] Fetch  ==> select count(1) as count from biz_activity 
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.056587 INFO rbatis::plugin::log - [rbatis] [424868252448067584] ReturnRows <== 1
+2022-10-18 17:54:45.056606 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   u64 => [{"count":7}]
+2022-10-18 17:54:45.057128 INFO rbatis::plugin::log - [rbatis] [424868252460650496] Fetch  ==> select * from biz_activity order by create_time desc limit 0,10
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.058865 INFO rbatis::plugin::log - [rbatis] [424868252460650496] ReturnRows <== 7
+2022-10-18 17:54:45.059002 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   alloc::vec::Vec<rbatis_demo::model::BizActivity> => [{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":1,"create_time":DateTime("2022-10-18 17:54:45"),"remark":"2","version":1,"status":2,"sort":"2","h5_link":"2","pc_link":"2","name":"2","id":"2"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":1,"create_time":DateTime("2022-10-18 17:54:45"),"remark":"2","version":1,"status":2,"sort":"2","h5_link":"2","pc_link":"2","name":"2","id":"3"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"221"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"222"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"223"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:08:13"),"remark":"","version":0,"status":1,"sort":"1","h5_link":"","pc_link":"","name":"test_insret","id":"178"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2019-12-12 00:00:00"),"remark":"fff","version":1,"status":1,"sort":"1","h5_link":null,"pc_link":null,"name":"活动1","id":"1"}]
+select_page = Ok(Page { records: [BizActivity { id: Some("2"), name: Some("2"), pc_link: Some("2"), h5_link: Some("2"), pc_banner_img: None, h5_banner_img: None, sort: Some("2"), status: Some(2), remark: Some("2"), create_time: Some(DateTime(2022-10-18 17:54:45)), version: Some(1), delete_flag: Some(1) }, BizActivity { id: Some("3"), name: Some("2"), pc_link: Some("2"), h5_link: Some("2"), pc_banner_img: None, h5_banner_img: None, sort: Some("2"), status: Some(2), remark: Some("2"), create_time: Some(DateTime(2022-10-18 17:54:45)), version: Some(1), delete_flag: Some(1) }, BizActivity { id: Some("221"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("222"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("223"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("178"), name: Some("test_insret"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("1"), status: Some(1), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:08:13)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("1"), name: Some("活动1"), pc_link: None, h5_link: None, pc_banner_img: None, h5_banner_img: None, sort: Some("1"), status: Some(1), remark: Some("fff"), create_time: Some(DateTime(2019-12-12 00:00:00)), version: Some(1), delete_flag: Some(0) }], total: 7, pages: 1, page_no: 1, page_size: 10, search_count: true })
+2022-10-18 17:54:45.059759 INFO rbatis::plugin::log - [rbatis] [424868252469039104] Fetch  ==> select count(1) as count from biz_activity where name != ''
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.060573 INFO rbatis::plugin::log - [rbatis] [424868252469039104] ReturnRows <== 1
+2022-10-18 17:54:45.060592 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   u64 => [{"count":7}]
+2022-10-18 17:54:45.060991 INFO rbatis::plugin::log - [rbatis] [424868252473233408] Fetch  ==> select * from biz_activity where name != '' limit 0,10
+                                                      [rbatis]                      Args   ==> []
+2022-10-18 17:54:45.062411 INFO rbatis::plugin::log - [rbatis] [424868252473233408] ReturnRows <== 7
+2022-10-18 17:54:45.062538 DEBUG rbatis::decode - [rbatis] [debug_mode] [value]   alloc::vec::Vec<rbatis_demo::model::BizActivity> => [{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2019-12-12 00:00:00"),"remark":"fff","version":1,"status":1,"sort":"1","h5_link":null,"pc_link":null,"name":"活动1","id":"1"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:08:13"),"remark":"","version":0,"status":1,"sort":"1","h5_link":"","pc_link":"","name":"test_insret","id":"178"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":1,"create_time":DateTime("2022-10-18 17:54:45"),"remark":"2","version":1,"status":2,"sort":"2","h5_link":"2","pc_link":"2","name":"2","id":"2"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"221"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"222"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":0,"create_time":DateTime("2020-06-17 20:10:23"),"remark":"","version":0,"status":0,"sort":"0","h5_link":"","pc_link":"","name":"test","id":"223"},{"h5_banner_img":null,"pc_banner_img":null,"delete_flag":1,"create_time":DateTime("2022-10-18 17:54:45"),"remark":"2","version":1,"status":2,"sort":"2","h5_link":"2","pc_link":"2","name":"2","id":"3"}]
+select_page_by_name = Ok(Page { records: [BizActivity { id: Some("1"), name: Some("活动1"), pc_link: None, h5_link: None, pc_banner_img: None, h5_banner_img: None, sort: Some("1"), status: Some(1), remark: Some("fff"), create_time: Some(DateTime(2019-12-12 00:00:00)), version: Some(1), delete_flag: Some(0) }, BizActivity { id: Some("178"), name: Some("test_insret"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("1"), status: Some(1), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:08:13)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("2"), name: Some("2"), pc_link: Some("2"), h5_link: Some("2"), pc_banner_img: None, h5_banner_img: None, sort: Some("2"), status: Some(2), remark: Some("2"), create_time: Some(DateTime(2022-10-18 17:54:45)), version: Some(1), delete_flag: Some(1) }, BizActivity { id: Some("221"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("222"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("223"), name: Some("test"), pc_link: Some(""), h5_link: Some(""), pc_banner_img: None, h5_banner_img: None, sort: Some("0"), status: Some(0), remark: Some(""), create_time: Some(DateTime(2020-06-17 20:10:23)), version: Some(0), delete_flag: Some(0) }, BizActivity { id: Some("3"), name: Some("2"), pc_link: Some("2"), h5_link: Some("2"), pc_banner_img: None, h5_banner_img: None, sort: Some("2"), status: Some(2), remark: Some("2"), create_time: Some(DateTime(2022-10-18 17:54:45)), version: Some(1), delete_flag: Some(1) }], total: 7, pages: 1, page_no: 1, page_size: 10, search_count: true })
+2022-10-18 17:54:45.063408 INFO rbatis::plugin::log - [rbatis] [424868252485816320] Exec   ==> delete from biz_activity where  id = ?
+                                                      [rbatis]                      Args   ==> ["2"]
+delete_by_column = Ok(ExecResult { rows_affected: 1, last_insert_id: U64(0) })
+2022-10-18 17:54:45.068207 INFO rbatis::plugin::log - [rbatis] [424868252485816320] RowsAffected <== 1
+2022-10-18 17:54:45.069336 INFO rbatis::plugin::log - [rbatis] [424868252506787840] Exec   ==> delete from biz_activity where name= '2'
+                                                      [rbatis]                      Args   ==> []
+delete_by_column = Ok(ExecResult { rows_affected: 1, last_insert_id: U64(0) })
+2022-10-18 17:54:45.072066 INFO rbatis::plugin::log - [rbatis] [424868252506787840] RowsAffected <== 1

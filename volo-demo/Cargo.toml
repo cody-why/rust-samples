@@ -10,8 +10,8 @@ members = ["volo-gen"]
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-volo = "*" 
-pilota = "*" 
+volo = "0.2" 
+pilota = "0.2" 
 
 lazy_static = "1"
 tracing = "0.1"

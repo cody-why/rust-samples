@@ -1,10 +1,9 @@
 /*
  * @Author: plucky
- * @Date: 2022-09-08 22:43:42
- * @LastEditTime: 2022-10-24 16:48:37
+ * @Date: 2022-10-28 11:13:09
+ * @LastEditTime: 2022-10-28 15:51:15
  * @Description: 
  */
-
 
 fn main() {
     println!("Hello, world!");

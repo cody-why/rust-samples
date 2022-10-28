@@ -1,0 +1,14 @@
+[package]
+name = "tiny-orm-demo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tiny_orm_core = {version = "0.3",features = ["mysql"]}
+tiny_orm_macro_derive = "0.3"
+
+sqlx= {version = "0.6", features = ["mysql"]}
+tokio = {version = "1", features = ["full"]}
+anyhow = "1" 
