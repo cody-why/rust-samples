@@ -45,7 +45,6 @@ impl Component for Model {
                 <button onclick={ctx.link().callback(|_| Msg::AddOne)} class="btn btn-success">{ "+1" }</button>
                 <button onclick={ctx.link().callback(|_| Msg::SubOne)} class="btn btn-success">{ "-1" }</button>
                 <button class="btn btn-success">{"Click Me"}</button>
-                <button class="mt-4" disalbe="true">{"Click Me"}</button>
             </div>
             </>
 
