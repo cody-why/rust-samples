@@ -15,6 +15,10 @@ console_error_panic_hook = "*"
 
 # 条件编译
 [features]
-default = ["desktop"]
+default = ["web"]
 web = ["dioxus/web"]
 desktop = ["dioxus/desktop"]
+
+[profile.release]
+opt-level = 3
+lto = true

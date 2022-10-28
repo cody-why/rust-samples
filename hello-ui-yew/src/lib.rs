@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-09 12:25:01
- * @LastEditTime: 2022-10-15 16:24:17
+ * @LastEditTime: 2022-10-28 21:23:55
  * @Description: 
  */
 
@@ -28,8 +28,8 @@ pub fn app() -> Html {
         <div>  
         <h1>{ "Hello World"}</h1>
         <h1>{ *val}</h1>
-        <button onclick={onclick2} class="btn btn-primary">{ "减1" }</button>
         <button onclick = { onclick } class="btn btn-secondary">{ "加1" }</button>
+        <button onclick={onclick2 } class="btn btn-primary">{ "减1" }</button>
         </div>
         
         <component::hello::Model />
