@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-28 18:02:53
- * @LastEditTime: 2022-10-28 20:29:43
+ * @LastEditTime: 2022-10-28 22:13:54
  * @Description: 
  */
 use dubbo::codegen::*;
@@ -22,6 +22,8 @@ pub struct FakeFilter {}
 async fn main() {
     let mut cli = EchoClient::new().with_uri("http://127.0.0.1:8889".to_string());
     // let mut unary_cli = cli.clone().with_filter(FakeFilter {});
+    
+    println!("-----------请求一个,回复一个-----------");
     let resp = cli
         .unary_echo(Request::new(EchoRequest {
             message: "message from client".to_string(),
@@ -33,7 +35,10 @@ async fn main() {
     };
     let (_parts, body) = resp.into_parts();
     println!("Response: {:?}", body);
-
+    println!("");
+    
+    // 
+    println!("-----------请求多个,回复一个-----------");
     let data = vec![
         EchoRequest {
             message: "msg1 from client streaming".to_string(),
@@ -53,7 +58,10 @@ async fn main() {
     };
     let (_parts, resp_body) = client_streaming_resp.into_parts();
     println!("client streaming, Response: {:?}", resp_body);
+    println!("");
 
+    // 
+    println!("-----------请求多个,回复多个-----------");
     let data = vec![
         EchoRequest {
             message: "msg1 from client".to_string(),
@@ -83,7 +91,10 @@ async fn main() {
     }
     let trailer = body.trailer().await.unwrap();
     println!("trailer: {:?}", trailer);
+    println!("");
 
+    // 
+    println!("-----------请求一个,回复多个-----------");
     let resp = cli
         .server_streaming_echo(Request::new(EchoRequest {
             message: "server streaming req".to_string(),

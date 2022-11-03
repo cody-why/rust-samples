@@ -39,6 +39,7 @@ impl Echo for EchoServerImpl {
         }))
     }
 
+    // 请求一个,回复一个
     async fn client_streaming_echo(
         &self,
         req: Request<Decoding<EchoRequest>>,
@@ -57,6 +58,7 @@ impl Echo for EchoServerImpl {
         }))
     }
 
+    // 请求一个,回复多个
     type ServerStreamingEchoStream = ResponseStream;
     async fn server_streaming_echo(
         &self,
@@ -80,6 +82,8 @@ impl Echo for EchoServerImpl {
         Ok(Response::new(Box::pin(resp)))
     }
 
+
+    // 请求多个,回复多个
     type BidirectionalStreamingEchoStream = ResponseStream;
 
     async fn bidirectional_streaming_echo(

@@ -9,11 +9,11 @@ use axum::{
     extract,
     extract::ws::{Message, WebSocket, WebSocketUpgrade},
     extract::Path,
-    response::IntoResponse,
+    response::IntoResponse, http::{ HeaderMap},
 };
 use futures::{sink::SinkExt, stream::StreamExt};
 use serde::Deserialize;
-use tracing::info;
+use tracing::{info, debug};
 use std::sync::Arc;
 use tokio::sync::{broadcast, Mutex};
 
@@ -28,9 +28,11 @@ pub struct Params {
 
 pub async fn handler(
     Path(params): Path<Params>,
+    header:HeaderMap,
     ws: WebSocketUpgrade,
     extract::Extension(state): extract::Extension<Arc<AppState>>,
 ) -> impl IntoResponse {
+    debug!("websocket connect: {:?}", header);
     ws.on_upgrade(|socket| websocket(socket, state, params))
 }
 

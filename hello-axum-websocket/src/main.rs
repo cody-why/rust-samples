@@ -1,15 +1,22 @@
+/*
+ * @Author: plucky
+ * @Date: 2022-08-31 19:47:55
+ * @LastEditTime: 2022-11-01 12:24:48
+ * @Description: 
+ */
+
 // #![allow(unused)]
 
 use axum::{
     routing::get,
-     Router, Extension,
+     Router, Extension, http::{Request}, body::{Body},
 };
 use dashmap::DashMap;
-use tracing::{info};
-use std::{env, net::SocketAddr, sync::Arc};
+use tracing::{info, Span};
+use std::{env, net::SocketAddr, sync::Arc, time::Duration};
 // use tokio::sync::Mutex;
 use tokio::sync::broadcast;
-use tower_http::{trace::TraceLayer};
+use tower_http::{trace::TraceLayer, classify::ServerErrorsFailureClass};
 mod handler;
 mod test;
 
@@ -20,7 +27,7 @@ pub struct AppState {
 // ws://127.0.0.1:8088/websocket/group1/1
 #[tokio::main]
 async fn main() {
-    env::set_var("RUST_LOG", "debug"); 
+    env::set_var("RUST_LOG", "info"); 
     tracing_subscriber::fmt().with_max_level(tracing::Level::DEBUG).init();
     // use nats broadcast messages to group clients
     let nats_host = env::var("NATS_HOST").unwrap_or("127.0.0.1:4222".to_string());
@@ -52,29 +59,18 @@ fn app(app_state: Arc<AppState>) -> Router {
             get(handler::ws::handler),
         )
         .layer(Extension(app_state))
-        .layer(TraceLayer::new_for_http())
-        // .layer(
-        //     TraceLayer::new_for_http()
-        //         .on_request(|request: &Request<_>, _span: &Span| {
-        //             debug!("started {} {}", request.method(), request.uri().path())
-        //         })
-        //         .on_response(|_response: &Response<_>, latency: Duration, _span: &Span| {
-        //             debug!("response generated in {:?}", latency)
-        //         })
-        //         .on_body_chunk(|chunk: &Bytes, _latency: Duration, _span: &Span| {
-        //             debug!("sending {} bytes", chunk.len())
-        //         })
-        //         .on_eos(
-        //             |_trailers: Option<&HeaderMap>, stream_duration: Duration, _span: &Span| {
-        //                 debug!("stream closed after {:?}", stream_duration)
-        //             },
-        //         )
-        //         .on_failure(
-        //             |error: ServerErrorsFailureClass, _latency: Duration, _span: &Span| {
-        //                 debug!("something went wrong: {:?}", error)
-        //             },
-        //         ),
-        // )
+        // .layer(TraceLayer::new_for_http())
+        // .layer(TraceLayer::new_for_http()
+        //     .on_request(|_request: &Request<Body>, _span: &Span| {
+        //         info!("started {} {}", _request.method(), _request.uri().path());
+        //     })
+        //     .on_response(())
+        //     .on_body_chunk(())
+        //     .on_eos(())
+        //     .on_failure(|error: ServerErrorsFailureClass, latency: Duration, _span: &Span| {
+        //         info!("something went wrong {error} {latency:?}")
+        // }))
+
 }
 
 fn gen_nc_task(app_state: Arc<AppState>) -> tokio::task::JoinHandle<()> {
