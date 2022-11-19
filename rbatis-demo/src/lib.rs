@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-18 16:50:11
- * @LastEditTime: 2022-10-19 16:22:27
+ * @LastEditTime: 2022-11-19 20:06:39
  * @Description: 
  */
 
@@ -20,11 +20,15 @@ pub static RB: Lazy<Rbatis> = Lazy::new(|| Rbatis::new());
 
 /// make a rbatis
 pub async fn init_db() -> Rbatis {
-    fast_log::init(fast_log::Config::new().console().level(log::LevelFilter::Info)).expect("log init fail");
+    // fast_log::init(fast_log::Config::new().console().level(log::LevelFilter::Info)).expect("log init fail");
     
     let rb = Rbatis::new();
+    let url = "mysql://root:HWbLk6QboXUwG6Xx@47.57.159.69:3306/hello";//?rewriteBatchedStatements=true
     // ------------choose database driver------------
-    rb.init(rbdc_mysql::driver::MysqlDriver {}, "mysql://root:newpassword@192.168.1.199:3306/hello").unwrap();
+    rb.init(rbdc_mysql::driver::MysqlDriver {}, url).unwrap();
+    // rb.get_pool().unwrap().resize(10);
+    
+    // rb.init(rbdc_mysql::driver::MysqlDriver {}, "mysql://root:newpassword@192.168.1.199:3306/hello").unwrap();
     // rb.init(rbdc_pg::driver::PgDriver {}, "postgres://postgres:123456@localhost:5432/postgres").unwrap();
     // rb.init(rbdc_mssql::driver::MssqlDriver {}, "mssql://SA:TestPass!123456@localhost:1433/test").unwrap();
     // rb.init(rbdc_sqlite::driver::SqliteDriver {}, "sqlite://target/sqlite.db", ).unwrap();

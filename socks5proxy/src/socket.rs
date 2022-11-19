@@ -170,23 +170,26 @@ async fn handle(src_stream: tokio::net::TcpStream) -> Result<(), Box<dyn std::er
     let  (mut src_reader,mut src_writer) = src_stream.into_split();
     let  (mut dst_reader,mut dst_writer) = dst_stream.into_split();
    
-    // _=tokio::join! (
-    //     tokio::io::copy(&mut src_reader, &mut dst_writer),
-    //     tokio::io::copy(&mut dst_reader, &mut src_writer),
-    // );
-    // tokio::select! {
-    //     _=tokio::io::copy(&mut src_reader, &mut dst_writer) => {
-    //         // info!("{} src copy dst done", dst);
-    //     },
-    //     _=tokio::io::copy(&mut dst_reader, &mut src_writer) => {
-    //         // info!("{} dst copy src done", dst);
-    //     }
-    // }
+
     let dst2 = dst.clone();
     tokio::spawn(async move {
         tokio::io::copy(&mut src_reader, &mut dst_writer).await.unwrap_or(0);
         info!("{} src -> dst done", dst2);
     });
+    // let mut read_task =  tokio::spawn(async move {
+    //     tokio::io::copy(&mut dst_reader, &mut src_writer).await.unwrap_or(0);
+        
+    // });
+    // tokio::select! {
+    //     _=(&mut send_task)=> {
+    //         info!("{} src -> dst done", dst);
+    //         read_task.abort();
+    //     },
+    //     _=(&mut read_task) => {
+    //         info!("{} dst -> src done", dst);
+    //         send_task.abort();
+    //     }
+    // }
     tokio::io::copy(&mut dst_reader, &mut src_writer).await?;
     info!("{} done", dst);
     

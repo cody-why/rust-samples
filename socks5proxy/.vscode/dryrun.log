@@ -1,5 +1,0 @@
-make --dry-run --always-make --keep-going --print-directory
-make: Entering directory `/Users/anger/Documents/rust/st/socks5proxy'
-cargo build --release --target x86_64-pc-windows-gnu
-make: Leaving directory `/Users/anger/Documents/rust/st/socks5proxy'
- 

@@ -15,7 +15,7 @@ use futures::{sink::SinkExt, stream::StreamExt};
 use serde::Deserialize;
 use tracing::{info, debug};
 use std::sync::Arc;
-use tokio::sync::{broadcast, Mutex};
+use tokio::sync::{ Mutex};
 
 use crate::AppState;
 
@@ -39,15 +39,18 @@ pub async fn handler(
 async fn websocket(stream: WebSocket, state: Arc<AppState>, params: Params) {
     let (sender, mut receiver) = stream.split();
     let sender = Arc::new(Mutex::new(sender));
-    let broadcast_sender = sender.clone();
+    let sender2 = sender.clone();
 
-    let tx = setup_sender(&state, &params.group_id).await;
     let user_id = params.user_id.clone();
     let group_id = params.group_id.clone();
+    info!("{} join group {}", user_id, group_id);
+
+    let tx = state.setup_sender(&group_id);
+
 
     let nc = state.nc.clone();
 
-    info!("{} join group {}", user_id, group_id);
+    // 接收到消息,发送到广播通道
     let mut recv_task = tokio::spawn(async move {
         while let Some(Ok(message)) = receiver.next().await {
             match message.clone() {
@@ -70,16 +73,13 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>, params: Params) {
         }
     });
 
+    // 接收广播消息,发送到客户端
     let mut send_task = tokio::spawn(async move {
         let mut rx = tx.clone().subscribe();
         while let Ok(message) = rx.recv().await {
-            if broadcast_sender
-                .lock()
-                .await
-                .send(Message::Text(message))
-                .await
-                .is_err()
-            {
+            if sender2.lock().await
+                .send(Message::Text(message)).await
+                .is_err(){
                 break;
             }
         }
@@ -94,25 +94,11 @@ async fn websocket(stream: WebSocket, state: Arc<AppState>, params: Params) {
 
     info!("{} leave group {}", params.user_id, group_id);
     // let mut group_list = state.group_list.lock().await;
-    let mut count = 0;
-    // Locking behaviour by get
-    if let Some(group) = state.group_list.get(&group_id) {
-        count = group.receiver_count();
-    }
+    let count = state.remove_group(&group_id);
 
-    if count == 1 {
-        state.group_list.remove(&group_id);
+    if count {
         info!("remove group {}", group_id);
     }
     
 }
 
-async fn setup_sender(state: &AppState, group_id: &str) -> broadcast::Sender<String> {
-    // let mut group_list = state.group_list.lock().await;
-    let group_id = group_id.to_string();
-
-    state.group_list
-        .entry(group_id)
-        .or_insert_with(|| broadcast::channel(100).0)
-        .clone()
-}

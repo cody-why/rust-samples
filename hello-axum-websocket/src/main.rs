@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-08-31 19:47:55
- * @LastEditTime: 2022-11-01 12:24:48
+ * @LastEditTime: 2022-11-10 23:50:12
  * @Description: 
  */
 
@@ -9,21 +9,19 @@
 
 use axum::{
     routing::get,
-     Router, Extension, http::{Request}, body::{Body},
+     Router, Extension,
 };
-use dashmap::DashMap;
-use tracing::{info, Span};
-use std::{env, net::SocketAddr, sync::Arc, time::Duration};
+use tracing::{info};
+use std::{env, net::SocketAddr, sync::Arc};
+
+use crate::state::AppState;
 // use tokio::sync::Mutex;
-use tokio::sync::broadcast;
-use tower_http::{trace::TraceLayer, classify::ServerErrorsFailureClass};
+// use tower_http::{trace::TraceLayer, classify::ServerErrorsFailureClass};
 mod handler;
 mod test;
+pub mod state;
 
-pub struct AppState {
-    group_list: DashMap<String, broadcast::Sender<String>>,
-    nc: nats::asynk::Connection,
-}
+
 // ws://127.0.0.1:8088/websocket/group1/1
 #[tokio::main]
 async fn main() {
@@ -37,8 +35,7 @@ async fn main() {
     };
 
     // let group_list = Mutex::new(HashMap::new());
-    let group_list = DashMap::new();
-    let app_state = Arc::new(AppState { group_list, nc });
+    let app_state = Arc::new(AppState::new(nc));
 
     let addr = SocketAddr::from(([0, 0, 0, 0], 8088));
 
