@@ -13,6 +13,7 @@ use rbatis::Rbatis;
 pub mod model;
 mod tests;
 mod user;
+mod test_batch;
 
 use once_cell::sync::Lazy;
 

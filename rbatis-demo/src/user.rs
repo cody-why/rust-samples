@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-18 21:23:43
- * @LastEditTime: 2022-11-19 20:08:01
+ * @LastEditTime: 2022-11-20 16:42:39
  * @Description: 
  */
 #![allow(dead_code)]
@@ -12,12 +12,12 @@ use serde::{Serialize, Deserialize};
  #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User{
     #[serde(skip_serializing)] // 插入更新时忽略该字段
-    id: Option<u64>,
+    pub id: Option<u64>,
     #[serde(rename = "name")] // 重命名该字段
-    name: String,
-    age: u8,
+    pub name: String,
+    pub age: u8,
     #[serde(skip)]// 忽略该字段
-    password:Option<String>,
+    pub password:Option<String>,
 }
 
 crud!(User{}, "users");
@@ -38,11 +38,11 @@ pub async fn delete_all(rb: &Rbatis) -> ExecResult {}
 pub async fn select_count(rb: &Rbatis) -> u64 {}
 
 
-
 #[cfg(test)]
 mod tests{
+    use crate::init_db;
+
     use super::*;
-    use crate::*;
 
     //test
     #[tokio::test]
@@ -74,102 +74,4 @@ mod tests{
         println!("{:?}",res);
         
     }
-
-
-    // 使用insert_batch
-    // 百万数据,2000/次,插入时间47秒
-    // 用tokio::spawn并发插入,插入时间37秒
-    // 1000/次,27秒,500/次,20秒,200/次,16秒,100/次,25秒
-    #[tokio::test]
-    async fn test_insert_batch(){
-        let mut rb = init_db().await;
-        let del = delete_all(&mut &rb).await.unwrap();
-        println!("del: {:?}", del);
-        
-        let time = std::time::Instant::now();
-        let (tx, mut rx) = tokio::sync::mpsc::channel(100);
-
-        for i in 0..5000{
-            let total = 200;
-            let mut users = Vec::with_capacity(total);
-            for j in 0..total{
-                users.push(User{
-                    id: None,
-                    name: format!("rabits{}",i*total+j),
-                    age: 18,
-                    password: None,
-                });
-            }
-            // let _data = User::insert_batch(&mut rb, &users, total as u64).await;
-            // println!("insert_batch = {:?}", data);
-
-            let tx = tx.clone();
-            let mut rb = rb.clone();
-            tokio::spawn(async move {
-                let _ = User::insert_batch(&mut rb, &users, total as u64).await;
-                tx.send(1).await.unwrap();
-            });
-        }
-
-        drop(tx);
-        let mut count = 0;
-        while let Some(_) = rx.recv().await {
-            count += 1;
-            
-        }
-        println!("job count: {}", count);
-        
-        println!("insert_batch = {:?}", time.elapsed());
-
-        let res = select_count(&mut rb).await;
-        println!("select_all = {:?}", res);
-        
-    }
-
-    // 使用sql
-    // 百万数据,5000/次,7.1秒,2000/次,插入时间7.2秒,1000/次,8.0秒
-    // 改变poolsize更慢
-    #[tokio::test]
-    async fn test_insert_batch_sql(){
-        let mut rb = init_db().await;
-        let del = delete_all(&mut &rb).await.unwrap();
-        println!("del: {:?}", del);
-        
-        let time = std::time::Instant::now();
-        let (tx, mut rx) = tokio::sync::mpsc::channel(100);
-
-        for i in 0..500{
-            let total = 2000;
-            let mut sql = String::from("insert into users(name, age) values");
-            for j in 0..total{
-                sql.push_str(&format!("('{}', {}),",format!("rabits{}",i*total+j), 18));
-            }
-            sql.pop();
-
-            // let _data = User::insert_batch(&mut rb, &users, total as u64).await;
-            // println!("insert_batch = {:?}", data);
-
-            let tx = tx.clone();
-            let rb = rb.clone();
-            tokio::spawn(async move {
-                rb.exec(&sql, vec![]).await.unwrap();
-                tx.send(1).await.unwrap();
-            });
-        }
-
-        drop(tx);
-        let mut count = 0;
-        while let Some(_) = rx.recv().await {
-            count += 1;
-            
-        }
-        println!("job count: {}", count);
-        
-        println!("insert_batch = {:?}", time.elapsed());
-
-        let res = select_count(&mut rb).await;
-        println!("select_all = {:?}", res);
-        
-    }
-
 }
