@@ -1,13 +1,15 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-18 16:50:11
- * @LastEditTime: 2022-11-19 20:06:39
+ * @LastEditTime: 2022-11-20 17:24:46
  * @Description: 
  */
 
 //#[macro_use] define in 'root crate' or 'mod.rs' or 'main.rs'
 #[macro_use]
 extern crate rbatis;
+use std::env;
+
 use rbatis::Rbatis;
 
 pub mod model;
@@ -22,9 +24,11 @@ pub static RB: Lazy<Rbatis> = Lazy::new(|| Rbatis::new());
 /// make a rbatis
 pub async fn init_db() -> Rbatis {
     // fast_log::init(fast_log::Config::new().console().level(log::LevelFilter::Info)).expect("log init fail");
-    
+    dotenv::dotenv().ok();
+    let url = &env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+
     let rb = Rbatis::new();
-    let url = "mysql://root:HWbLk6QboXUwG6Xx@47.57.159.69:3306/hello";//?rewriteBatchedStatements=true
+    
     // ------------choose database driver------------
     rb.init(rbdc_mysql::driver::MysqlDriver {}, url).unwrap();
     // rb.get_pool().unwrap().resize(10);

@@ -23,5 +23,5 @@ fastdate = { version = "0.1"}
 log = "0.4"
 fast_log = "1.5"
 
-
+dotenv = "0.15"
 
