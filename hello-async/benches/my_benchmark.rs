@@ -1,11 +1,12 @@
-/*** 
+/*
  * @Author: plucky
  * @Date: 2022-06-25 22:05:19
- * @LastEditTime: 2022-09-03 22:56:21
+ * @LastEditTime: 2022-11-25 22:11:38
  * @Description: 
  */
 
 //! 用criterion进行benchmark测试的例子
+//! cargo bench --bench my_benchmark
 
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
 

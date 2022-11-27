@@ -1,11 +1,11 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-24 16:47:51
- * @LastEditTime: 2022-10-24 17:26:43
+ * @LastEditTime: 2022-11-24 21:30:53
  * @Description: 
  */
-
 #![feature(type_alias_impl_trait)]
+#![feature(generic_associated_types)]
 pub mod layer;
 
 use std::{collections::HashMap};

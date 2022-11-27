@@ -457,6 +457,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "dioxus-html-macro"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "7bdf706b1c5dfbfd2940ff116d2ddd433776b81a1900e31ced5884dfc45c5b11"
+dependencies = [
+ "dioxus",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "dioxus-interpreter-js"
 version = "0.2.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -946,6 +958,7 @@ version = "0.1.0"
 dependencies = [
  "console_error_panic_hook",
  "dioxus",
+ "dioxus-html-macro",
  "tracing",
  "tracing-wasm",
 ]

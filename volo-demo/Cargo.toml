@@ -7,11 +7,13 @@ edition = "2021"
 
 [workspace]
 members = ["volo-gen"]
+resolver = "2"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 volo = "0.2" 
-pilota = "0.2" 
+# pilota = "0.2" 
+# volo-thrift =  "0.2"
 
 lazy_static = "1"
 tracing = "0.1"

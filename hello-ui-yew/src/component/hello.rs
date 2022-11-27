@@ -3,7 +3,7 @@ use yew::prelude::*;
 /*
  * @Author: plucky
  * @Date: 2022-10-09 17:33:45
- * @LastEditTime: 2022-10-28 21:18:07
+ * @LastEditTime: 2022-11-27 10:23:06
  * @Description:
  */
 pub enum Msg {
@@ -51,9 +51,7 @@ impl Component for Model {
         }
     }
 
-    fn changed(&mut self, _ctx: &Context<Self>) -> bool {
-        false
-    }
+    
 
     
 }

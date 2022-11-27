@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-15 16:04:30
- * @LastEditTime: 2022-10-15 16:38:21
+ * @LastEditTime: 2022-11-27 10:22:07
  * @Description: 
  */
 
@@ -34,10 +34,11 @@ impl Component for Counter {
     // }
 
     // 通知更新属性
-    fn changed(&mut self, ctx: &Context<Self>) -> bool {
+    fn changed(&mut self, ctx: &Context<Self>, _old_props: &Self::Properties) -> bool {
         self.props = ctx.props().clone();
         true
     }
+    
 
     // 用属性来更新组件
     fn view(&self, _ctx: &Context<Self>) -> Html {
