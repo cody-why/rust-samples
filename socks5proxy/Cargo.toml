@@ -11,10 +11,13 @@ lto = true
 strip = true
 
 [dependencies]
-argparse = "0.2"
+# argparse = "0.2"
 
 tracing = { version = "0.1" }
 tracing-subscriber = { version = "0.3", features = ["fmt","time"], default-features = false }
 time = {version = "0.3"}
 
 tokio = { version = "1", features = ["rt-multi-thread","net","macros","io-util"] }
+
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"

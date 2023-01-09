@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-10-15 16:04:30
- * @LastEditTime: 2022-11-27 10:22:07
+ * @LastEditTime: 2022-12-09 21:56:11
  * @Description: 
  */
 
@@ -42,12 +42,14 @@ impl Component for Counter {
 
     // 用属性来更新组件
     fn view(&self, _ctx: &Context<Self>) -> Html {
-        html!{
+        html!{<>
             <div>
                 <span>{"属性组件"}</span>
                 <p>{ self.props.count }</p>
                 <p>{ _ctx.props().count }</p>
+                
             </div>
+            </>
         }
     }
 

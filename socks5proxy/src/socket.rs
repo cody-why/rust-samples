@@ -7,15 +7,22 @@
 
 use tokio::{net::{TcpStream, TcpListener }};
 use tokio::io::{AsyncReadExt, AsyncWriteExt};
-use tracing::info;
+use tracing::{info};
+
+use crate::config::Config;
 
 static USEPASS:bool = false;
 
-pub async fn start_server(addr:String) -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind(&addr).await.expect("Can't listen");
-    info!("Listening on: {}", addr);
+pub async fn start_server(config:&Config) -> Result<(), Box<dyn std::error::Error>> {
+    let listener = TcpListener::bind(&config.server_listen).await.expect("Can't listen");
+    info!("Listening on: {}", config.server_listen);
 
     while let Ok((stream, _)) = listener.accept().await {
+        let addr = stream.peer_addr()?;
+        if !config.white_list.contains(&addr.ip().to_string()) {
+            info!("{} is not in white list", addr);
+            continue;
+        }
         tokio::spawn(async move {
             let _= handle(stream).await;
         });
@@ -23,6 +30,58 @@ pub async fn start_server(addr:String) -> Result<(), Box<dyn std::error::Error>>
 
     Ok(())
 }
+
+// socks5协议维基百科：https://zh.m.wikipedia.org/zh-hans/SOCKS
+// 英文：https://en.wikipedia.org/wiki/SOCKS#SOCKS5
+async fn handle(src_stream: tokio::net::TcpStream) -> Result<(), Box<dyn std::error::Error>> {
+    let addr = src_stream.peer_addr()?;
+    
+    // info!("src: {}", addr);
+    
+    let mut src_stream = src_stream;
+    do_greeting(&mut src_stream).await?;
+    // info!("greeting done");
+    let dst = parse_dst(&mut src_stream).await?;
+    info!("{} to {}", addr, dst);
+
+    // 连接目标地址，转发请求并返回响应
+    let dst_stream = TcpStream::connect(&dst).await?;
+
+    src_stream.write_all(&[0x05,0,0,0x01,0,0,0,0,0,0]).await?;
+    // 参考socks5对响应包的描述
+    // VER STATUS RSV
+    // src_writer.write(&[0x05])?;
+    // STATUS
+    // src_writer.write(&[0x00])?;
+    // RSV
+    // src_writer.write(&[0x00])?;
+    // BNDADDR BNDPORT
+    // src_writer.write(&[0x01])?;
+    // src_writer.write(&[0x00])?;
+    // src_writer.write(&[0x00])?;
+    // src_writer.write(&[0x00])?;
+    // src_writer.write(&[0x00])?;
+    // BNDPORT
+    // src_writer.write(&[0x00])?;
+    // src_writer.write(&[0x00])?;
+
+    let  (mut src_reader,mut src_writer) = src_stream.into_split();
+    let  (mut dst_reader,mut dst_writer) = dst_stream.into_split();
+   
+
+    // let dst2 = dst.clone();
+    tokio::spawn(async move {
+        tokio::io::copy(&mut dst_reader, &mut src_writer).await.unwrap_or(0);
+        // debug!("{} to {} dts -> src done",addr, dst2);
+    });
+    
+    tokio::io::copy(&mut src_reader, &mut dst_writer).await?;
+    
+    info!("{} to {} done",addr, dst);
+    Ok(())
+}
+
+
 
 // connect 协议
 // https://www.q578.com/s-5-2526694-0/
@@ -133,66 +192,4 @@ async fn parse_dst(src_reader: &mut TcpStream) -> Result<String, Box<dyn std::er
     Ok(dst)
 }
 
-
-// socks5协议维基百科：https://zh.m.wikipedia.org/zh-hans/SOCKS
-// 英文：https://en.wikipedia.org/wiki/SOCKS#SOCKS5
-async fn handle(src_stream: tokio::net::TcpStream) -> Result<(), Box<dyn std::error::Error>> {
-    let addr = src_stream.peer_addr()?;
-    // info!("src: {}", addr);
-    
-    let mut src_stream = src_stream;
-    do_greeting(&mut src_stream).await?;
-    // info!("greeting done");
-    let dst = parse_dst(&mut src_stream).await?;
-    info!("{} to {}", addr, dst);
-
-    // 连接目标地址，转发请求并返回响应
-    let dst_stream = TcpStream::connect(&dst).await?;
-
-    src_stream.write_all(&[0x05,0,0,0x01,0,0,0,0,0,0]).await?;
-    // 参考socks5对响应包的描述
-    // VER STATUS RSV
-    // src_writer.write(&[0x05])?;
-    // STATUS
-    // src_writer.write(&[0x00])?;
-    // RSV
-    // src_writer.write(&[0x00])?;
-    // BNDADDR BNDPORT
-    // src_writer.write(&[0x01])?;
-    // src_writer.write(&[0x00])?;
-    // src_writer.write(&[0x00])?;
-    // src_writer.write(&[0x00])?;
-    // src_writer.write(&[0x00])?;
-    // BNDPORT
-    // src_writer.write(&[0x00])?;
-    // src_writer.write(&[0x00])?;
-
-    let  (mut src_reader,mut src_writer) = src_stream.into_split();
-    let  (mut dst_reader,mut dst_writer) = dst_stream.into_split();
-   
-
-    let dst2 = dst.clone();
-    tokio::spawn(async move {
-        tokio::io::copy(&mut src_reader, &mut dst_writer).await.unwrap_or(0);
-        info!("{} src -> dst done", dst2);
-    });
-    // let mut read_task =  tokio::spawn(async move {
-    //     tokio::io::copy(&mut dst_reader, &mut src_writer).await.unwrap_or(0);
-        
-    // });
-    // tokio::select! {
-    //     _=(&mut send_task)=> {
-    //         info!("{} src -> dst done", dst);
-    //         read_task.abort();
-    //     },
-    //     _=(&mut read_task) => {
-    //         info!("{} dst -> src done", dst);
-    //         send_task.abort();
-    //     }
-    // }
-    tokio::io::copy(&mut dst_reader, &mut src_writer).await?;
-    info!("{} done", dst);
-    
-    Ok(())
-}
 
