@@ -1,11 +1,10 @@
 /*
  * @Author: plucky
  * @Date: 2022-06-25 19:03:44
- * @LastEditTime: 2022-11-25 22:05:53
+ * @LastEditTime: 2023-07-07 09:26:45
  * @Description: 
  */
 
-mod test_async;
 
 fn main(){
     println!("Hello world!");

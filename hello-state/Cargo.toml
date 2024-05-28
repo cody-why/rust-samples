@@ -6,4 +6,6 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-state = "0.5.3"
+state = "0.6"
+inventory = "0.3"
+linkme = "0.3"

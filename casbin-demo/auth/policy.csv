@@ -1,0 +1,5 @@
+p, admin, *, *
+p,*, /login, POST
+p,*, /anthcode,GET
+p, member, /member/*,*
+g,alice,member,

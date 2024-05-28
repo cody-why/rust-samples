@@ -1,6 +1,6 @@
 syntax = "proto3";
 
- package grpc.examples.echo;
+ package echo;
 
  // EchoRequest is the request for echo.
  message EchoRequest {
@@ -15,11 +15,16 @@ syntax = "proto3";
  // Echo is the echo service.
  service Echo {
    // UnaryEcho is unary echo.
+   // 普通的请求
    rpc UnaryEcho(EchoRequest) returns (EchoResponse) {}
    // ServerStreamingEcho is server side streaming.
+   // 服务端的流
    rpc ServerStreamingEcho(EchoRequest) returns (stream EchoResponse) {}
    // ClientStreamingEcho is client side streaming.
+   // 客户端的流
    rpc ClientStreamingEcho(stream EchoRequest) returns (EchoResponse) {}
    // BidirectionalStreamingEcho is bidi streaming.
+   // 双向流
    rpc BidirectionalStreamingEcho(stream EchoRequest) returns (stream EchoResponse) {}
+   
  }

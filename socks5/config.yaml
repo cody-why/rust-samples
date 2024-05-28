@@ -1,0 +1,4 @@
+server:
+  listen: 0.0.0.0:3081
+  log_level: info
+  white_list: [127.0.0.1]

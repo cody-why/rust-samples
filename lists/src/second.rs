@@ -17,15 +17,17 @@ impl<T> List<T> {
         List { head: None }
     }
 
+    /// 头部插入节点
     pub fn push(&mut self, elem: T) {
         let new_node = Box::new(Node {
             elem: elem,
-            next: self.head.take(),
+            next: self.head.take(),//take()方法将Option<T>中的值取出，然后将Option<T>设置为None
         });
 
         self.head = Some(new_node);
     }
 
+    /// 弹出头部节点
     pub fn pop(&mut self) -> Option<T> {
         self.head.take().map(|node| {
             self.head = node.next;
@@ -33,30 +35,36 @@ impl<T> List<T> {
         })
     }
 
+    /// 头部不可变借用
     pub fn peek(&self) -> Option<&T> {
         self.head.as_ref().map(|node| {
             &node.elem
         })
     }
 
+    /// 头部可变借用
     pub fn peek_mut(&mut self) -> Option<&mut T> {
         self.head.as_mut().map(|node| {
             &mut node.elem
         })
     }
 
+    /// 链表改变,消费节点
     pub fn into_iter(self) -> IntoIter<T> {
         IntoIter(self)
     }
 
+    // 链表不变，节点借用
     pub fn iter(&self) -> Iter<'_, T> {
         Iter { next: self.head.as_deref() }
     }
 
+    /// 链表不变，节点可变借用
     pub fn iter_mut(&mut self) -> IterMut<'_, T> {
         IterMut { next: self.head.as_deref_mut() }
     }
 }
+
 
 impl<T> Drop for List<T> {
     fn drop(&mut self) {
@@ -72,7 +80,7 @@ pub struct IntoIter<T>(List<T>);
 impl<T> Iterator for IntoIter<T> {
     type Item = T;
     fn next(&mut self) -> Option<Self::Item> {
-        // access fields of a tuple struct numerically
+        // 数字0访问List
         self.0.pop()
     }
 }

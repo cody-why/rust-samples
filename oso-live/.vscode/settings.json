@@ -1,0 +1,9 @@
+{
+    "cody.autocomplete.experimental.ollamaOptions": {
+        "url": "http://127.0.0.1:11434",
+        // "url": "http://210.209.76.60:8007",
+        "model": "codellama:7b-code"
+    },
+    "rust-analyzer.showUnlinkedFileNotification": false
+
+}

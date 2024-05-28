@@ -1,0 +1,23 @@
+[package]
+name = "http-proxy"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+hyper={version = "0.14", features = ["full"]}
+
+bytes="1.5"
+http-body="0.4"
+# http-body-util = "0.1.0-rc.3"
+fern = {version = "0.6", features = ["date-based"]}
+chrono = "0.4"
+log = "0.4"
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+

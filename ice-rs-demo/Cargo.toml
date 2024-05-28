@@ -1,0 +1,25 @@
+[package]
+name = "ice-rs-demo"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+# [[bin]]
+# name = "client"
+# path = "src/client.rs"
+
+# [[bin]]
+# name = "server"
+# path = "src/server.rs"
+
+[build-dependencies]
+ice-rs = {version = "0.3"}
+
+
+[dependencies]
+ice-rs = {version = "0.3"}
+ice-derive = { version="0.1" }
+num_enum = "0.7"
+tokio = { version = "1", features = ["full"] }
+async-trait = "0.1"

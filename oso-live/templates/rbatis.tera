@@ -1,0 +1,49 @@
+#![allow(unused_imports)]
+use serde::{Deserialize, Serialize};
+// use rbatis::rbdc::types::*;
+use rust_decimal::Decimal;
+use fastdate::DateTime;
+
+/// {{table.table_name}}
+{% if template.comment -%}
+    /// {{ template.comment }}
+{% endif -%}
+{% if table.index_key -%}
+    /// 索引：{{table.index_key}}
+{% endif -%}
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
+pub struct {{ table.struct_name }} {
+{%- for v in table.fields %}
+	{% if v.comment -%}
+	    /// {{ v.comment }}  {% if v.default %} default: {{ v.default }}{% endif %} 
+	{% endif -%}
+    
+    {% if v.is_null == 1 -%}
+    	{% if v.field_name == 'type' -%}
+	        pub r#type: Option<{{ v.field_type }}>,
+        {%- else -%}
+            pub {{ v.field_name }}: Option<{{ v.field_type }}>,
+    {%- endif -%}
+    {%- else -%}
+        {% if v.field_type == 'DateTime' -%}
+            pub {{ v.field_name }}: Option<{{ v.field_type }}>,
+        {%- else -%}
+             {% if v.field_name == 'type' -%}
+	            pub r#type: {{ v.field_type }},
+            {%- else -%}
+                pub {{ v.field_name }}: {{ v.field_type }},
+            {%- endif -%}
+            
+        {%- endif -%}
+    {%- endif -%}
+
+{%- endfor %}
+}
+
+impl {{table.struct_name}} {
+    pub fn table_name() -> &'static str {
+        "{{table.table_name}}"
+    }
+}
+
+rbatis::crud!({{ template.struct_name }}{});

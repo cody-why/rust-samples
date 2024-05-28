@@ -7,11 +7,22 @@ edition = "2021"
 
 [dependencies]
 futures = {version = "0.3", features = ["thread-pool"]}
-
+# 异步任务组
+awaitgroup = "0.7.0"
 #bench测试
-criterion= "0.4"
+criterion= "0.5"
 
 tokio = { version = "1", features = ["full"] }
+
+rand = "0.8"
+futures-timer = "3"
+
+# 内存存储
+dashmap = "5.4"
+#并行
+rayon = "1.7"
+
+pin-project = "1"
 
 [[bench]]
 name = "my_benchmark"

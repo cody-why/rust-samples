@@ -1,0 +1,5 @@
+https_proxys: 
+  "HK": "socks5://210.209.76.588:3081"
+urls:
+  - https://github.com/
+  - https://www.baidu.com

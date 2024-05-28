@@ -1,15 +1,21 @@
+/*
+ * @Author: plucky
+ * @Date: 2022-06-10 09:10:55
+ * @LastEditTime: 2023-03-16 19:08:16
+ * @Description: 
+ */
+
 
 
 use std::future::Future;
 
 use tokio::{fs, try_join};
-use toml::Value;
 use anyhow::Result;
 
 /// 这是一个异步的例子
 
 
-//anyhow::Result 代替 Result<String, Box<dyn Error>>
+//anyhow::Result 代替 Result<(), Box<dyn Error>>
 
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -52,8 +58,9 @@ async fn main() -> Result<()> {
 }
 
 fn toml2yaml(content: &str) -> Result<String> {
-    let value:Value = toml::from_str(&content)?;
-    Ok(serde_yaml::to_string(&value)?)
+    // let value:Value = toml::from_str(&content)?;
+    // Ok(serde_yaml::to_string(&value)?)
+    Ok(content.to_string())
 }
 
 #[allow(dead_code)]

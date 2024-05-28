@@ -1,0 +1,25 @@
+[package]
+name = "tower-tcp"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio={version = "1", features = ["full"]}
+tower = {version = "0.4", features = ["buffer","make","util"]}
+bytes = "1"
+
+futures = "0.3"
+pin-project-lite = "0"
+# pin-project = "1"
+
+hyper = {version = "0.14", features = ["full"]}
+# bincode = "1"
+
+tokio-stream="0.1"
+
+# 全局变量
+state = "0.6"
+
+rand = "0.8"

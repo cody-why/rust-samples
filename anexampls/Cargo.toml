@@ -1,0 +1,46 @@
+[package]
+name = "anserver"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+# serde = { version = "1", features = ["derive"] }
+# toml = "0.7"
+tokio-tungstenite = "0.19"
+state = "0.6"
+
+thiserror = "1"
+# anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = {version = "0.3", features = ["env-filter","local-time"]}
+bytes = "1"
+
+time = "0.3"
+
+# 数据包编解码
+futures = "0.3"
+tokio-util = {version = "0.7", features = ["codec"]}
+
+# 命令行参数解析
+clap = {version = "4.3", features = ["derive"]}
+# 内存存储
+dashmap = {version = "5.5"}
+#并行
+rayon = "1.7"
+
+parking_lot = "0.12"
+
+# prost = "0.11"
+
+tower = { version = "0.4", features = ["buffer","util"] }
+motore="*"
+
+rand = "0.8"
+
+[workspace]
+members = [
+    "macros",
+]

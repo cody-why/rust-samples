@@ -4,31 +4,34 @@ version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-[[bin]] # Bin to run the HelloWorld gRPC server
-name = "hello-server"
-path = "src/helloworld/server.rs"
 
-[[bin]] # Bin to run the HelloWorld gRPC client
-name = "hello-client"
-path = "src/helloworld/client.rs"
+# [[bin]] 
+# name = "echo-server"
+# path = "src/echo/server.rs"
 
-[[bin]] 
-name = "echo-server"
-path = "src/echo/server.rs"
-
-[[bin]] 
-name = "echo-client"
-path = "src/echo/client.rs"
 
 [dependencies]
-tonic = "0.8.2"
-prost = "0.11"
-tokio = { version ="1.21", features = ["macros", "rt-multi-thread"] }
+tonic = "0.11"
+prost = "0.12"
+tokio = { version ="1", features = ["macros", "rt-multi-thread"] }
 
 # stream
 futures = "0.3"
 tokio-stream="0.1"
-h2 = "0.3"
+h2 = "0.4"
+
+
+tracing = "*"
+tracing-subscriber = {version = "0.3", features = ["env-filter","local-time"]}
+
+tower = "0.4"
+flume = "0.11"
+rand = "0.8"
+
+ginepro="0.7"
+anyhow="1"
+etcd-client = "0.12"
+async-recursion = "1"
 
 [build-dependencies]
-tonic-build = "0.8.2"
+tonic-build = "0.11"

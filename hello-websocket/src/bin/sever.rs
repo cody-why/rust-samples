@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-08-30 10:20:56
- * @LastEditTime: 2022-11-03 17:31:50
+ * @LastEditTime: 2023-02-16 20:26:57
  * @Description: 
  */
 
@@ -16,6 +16,24 @@ use std::time::Duration;
 use tokio::net::{TcpListener, TcpStream};
 use tokio_tungstenite::{tungstenite::Error};
 use tokio_tungstenite::tungstenite::{Result, Message};
+
+#[tokio::main]
+async fn main() {
+    env::set_var("RUST_LOG", "info");
+    env_logger::init();
+    
+    let addr = "0.0.0.0:9001";
+    let listener = TcpListener::bind(&addr).await.expect("Can't listen");
+    info!("Listening on: {}", addr);
+
+    // 用broadcast channel来广播消息
+    let (tx, _rx) = tokio::sync::broadcast::channel::<(String,SocketAddr)>(1024);
+
+    while let Ok((stream, addr)) = listener.accept().await {
+        let tx = tx.clone();
+        tokio::spawn(accept_connection(stream, addr, tx));
+    }
+}
 
 async fn accept_connection(stream: TcpStream, addr: SocketAddr, tx: Sender<(String,SocketAddr)>){
     // let peer = stream.peer_addr().expect("connected streams should have a peer address");
@@ -106,20 +124,3 @@ async fn handle_connection(stream: TcpStream, addr: SocketAddr, tx: &Sender<(Str
     Ok(())
 }
 
-#[tokio::main]
-async fn main() {
-    env::set_var("RUST_LOG", "info");
-    env_logger::init();
-    
-    let addr = "0.0.0.0:9001";
-    let listener = TcpListener::bind(&addr).await.expect("Can't listen");
-    info!("Listening on: {}", addr);
-
-    // 用broadcast channel来广播消息
-    let (tx, _rx) = tokio::sync::broadcast::channel::<(String,SocketAddr)>(1024);
-
-    while let Ok((stream, addr)) = listener.accept().await {
-        let tx = tx.clone();
-        tokio::spawn(accept_connection(stream, addr, tx));
-    }
-}

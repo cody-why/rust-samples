@@ -1,0 +1,33 @@
+[package]
+name = "hello-log"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# log4rs
+log4rs = "1.2.0"
+log = "0.4"
+
+# tracing
+tracing = { version = "0.1", features = ["log"] }
+tracing-subscriber = {version = "0.3", features = ["local-time","env-filter"]}
+tracing-appender = { version = "0.2"}
+time = {version = "0.3",features = ["macros",]}
+
+# fern
+fern = {version = "0.6", features = ["date-based"]}
+#chrono = "0.4"
+humantime="2.1"
+
+# simplelog
+simplelog = "0.12"
+log-error = "0.1.1"
+
+# fast_log
+fast_log = "1.6"
+
+#simple_logger="*"
+#fastdate="*"
+

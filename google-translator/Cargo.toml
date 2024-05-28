@@ -1,0 +1,27 @@
+[package]
+name = "translator"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+# tokio = { version = "1", features = ["test-util"] }
+# google_translator = "0.2.2"
+# env_logger = "0.10.0"
+# rustlate = "1.0.0"
+reqwest = {version = "0.11", default-features = false, features = ["blocking","socks","rustls-tls"]}
+tl = "0.7"
+serde = {version = "1",features = ["derive"]}
+serde_json = "1"
+serde_yaml = "0.9"
+
+rayon="1"
+indexmap = {version = "2.1", features = ["serde","rayon"]}
+html-escape = "0.2.13"
+
+[profile.release]
+opt-level = "z"
+lto = true
+strip = true
+

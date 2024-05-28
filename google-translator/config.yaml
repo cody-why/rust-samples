@@ -1,0 +1,45 @@
+file: lang.json
+from: zh-CN
+json_key: ZH
+https_proxy: socks5://210.209.76.158:3081
+translate: 
+    - to: en
+      json_key: EN
+      t: 英文
+    - to: zh-TW
+      json_key: TW
+      t: 繁体中文
+    - to: vi
+      json_key: VN
+      t: 越南
+    - to: ja
+      json_key: JA
+      t: 日文
+    - to: ko
+      json_key: KO
+      t: 韩文
+    - to: ms
+      json_key: MS
+      t: 马来
+    - to: th
+      json_key: TH
+      t: 泰国
+    - to: id
+      json_key: ID
+      t: 印度尼西亚
+    - to: hi
+      json_key: HI
+      t: 印地语    
+    - to: pt
+      json_key: PT
+      t: 葡萄牙语
+    - to: fr
+      json_key: FR
+      t: 法语
+    - to: ar
+      json_key: AR
+      t: 阿拉伯语
+
+
+
+

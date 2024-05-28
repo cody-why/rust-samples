@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2022-06-25 22:05:19
- * @LastEditTime: 2022-11-25 22:11:38
+ * @LastEditTime: 2023-07-07 09:28:08
  * @Description: 
  */
 
@@ -22,6 +22,6 @@ fn fibonacci(n: u64) -> u64 {
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("fib 20", |b| b.iter(|| fibonacci(black_box(20))));
 }
-
+// 一个测试组
 criterion_group!(benches, criterion_benchmark);
 criterion_main!(benches);

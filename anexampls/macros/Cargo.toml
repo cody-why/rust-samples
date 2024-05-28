@@ -1,0 +1,24 @@
+[package]
+name = "kvserver-macros"
+version = "0.1.0"
+edition = "2021"
+authors = ["plucky"]
+description = "Derive macro implement Create, Read, Update, and Delete (CRUD) methods base on sqlx."
+#documentation = "https://docs.rs/co_orm/"
+# readme = "../readme.md"
+keywords = [
+    "server",
+]
+# categories = ["database"]
+# license = "Apache-2.0"
+# repository = "https://github.com/cody-why/co-orm"
+
+[dependencies]
+quote = "1"
+syn = {version = "1", features = ["extra-traits",]}
+
+[lib]
+proc-macro = true
+
+# [features]
+# default = ["a"]

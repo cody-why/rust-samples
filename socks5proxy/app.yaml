@@ -1,3 +1,0 @@
-server_listen: 0.0.0.0:3080
-log_level: info
-white_list: 127.0.0.1,

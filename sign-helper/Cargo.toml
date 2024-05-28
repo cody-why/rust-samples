@@ -1,0 +1,32 @@
+[package]
+name = "sign-helper"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+dioxus = {version = "0.2", features = ["web","fermi"]}
+console_error_panic_hook = "0.1"
+# dioxus-html-macro = "0.2"
+tracing = "0"
+tracing-wasm = "0"
+md5 = "0.7"
+#wasm rsa need getrandom features 'js' and  rand 'getrandom'
+rsa = {version = "0.7",default-features =false ,features = ["pem"]}
+rand={version = "0.8",default-features =false ,features = ["getrandom"]}
+getrandom = { version = "0.2", features = ["js"] }
+base64 = "0.13"
+# serde = "1"
+# serde_json = "1"
+
+[dev-dependencies]
+openssl={version = "0.10"}
+
+[profile.release]
+opt-level = 3
+lto = true
+strip = true
+
+[profile.dev]
+opt-level = 3

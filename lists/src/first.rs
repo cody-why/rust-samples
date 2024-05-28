@@ -1,3 +1,10 @@
+/*
+ * @Author: plucky
+ * @Date: 2022-06-17 00:37:57
+ * @LastEditTime: 2023-01-11 10:03:16
+ * @Description: 
+ */
+
 
 use std::mem;
 ///不太优秀的单向链表
@@ -28,7 +35,7 @@ impl List {
     pub fn push(&mut self, elem: i32) {
         let new_node = Box::new(Node {
             elem: elem,
-            //从借用 self 中偷出了它的值 head 并赋予给 next 字段，同时将一个新值 Link::Empty 放入到 head 中
+            //方法1:从借用 self 中偷出了它的值 head 并赋予给 next 字段，同时将一个新值 Link::Empty 放入到 head 中
             //next: mem::replace(&mut self.head, Link::Empty),
             //方法2:take 需要实现Default
             next: mem::take(&mut self.head),
