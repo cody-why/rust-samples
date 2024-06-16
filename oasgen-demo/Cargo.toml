@@ -1,0 +1,10 @@
+[package]
+name = "oasgen-demo"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+axum = "0.7"
+oasgen = { version = "0.20", features = ["axum","swagger-ui"] }
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1", features = ["full"] }

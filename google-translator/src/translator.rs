@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2023-03-05 01:48:56
- * @LastEditTime: 2024-03-22 18:37:52
+ * @LastEditTime: 2024-06-16 22:07:11
  * @Description: 
  */
 
@@ -56,7 +56,9 @@ fn parse_result(result: Result<String, String>) -> Result<String, String> {
                 Some(element) => {
                     let text = element.get(parser).unwrap().inner_text(parser);
                     // 转换html标记符为文本
-                    return Ok(decode_html_entities(&text).into_owned());
+                    let text = decode_html_entities(&text);
+                    let text = uppercase_first(&text);
+                    return Ok(text);
                 
                 },
                 
@@ -67,11 +69,19 @@ fn parse_result(result: Result<String, String>) -> Result<String, String> {
     }
 }
 
+fn uppercase_first(s: &str) -> String {
+    if let Some(first_char) = s.chars().next() {
+        if first_char.is_ascii_alphabetic() {  // 检查是否为拉丁字母
+            return first_char.to_uppercase().collect::<String>() + &s[1..];
+        }
+    }
+    s.to_string()
+}
 
 #[test]
 fn test1(){
     // https://translate.google.com/m?tl=en&sl=zh-Cn&q=真可惜&hl=en
-    std::env::set_var("https_proxy", "socks5://8.217.7.158:3081");
+    std::env::set_var("https_proxy", "socks5://18.217.7.158:1081");
     match translate("zh-Cn", "en", "真可惜") {
         Ok(translated) => println!("Result: {}", translated),
         Err(_) => println!("Something wrong...")

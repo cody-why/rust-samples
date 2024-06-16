@@ -7,6 +7,6 @@ edition = "2021"
 
 [dependencies]
 tokio = {version = "1", features = ["full"]}
-sqlx-adapter = {version = "0.4", default-features = false, features = ["mysql","runtime-tokio-native-tls"]}
+sqlx-adapter = {version = "1.2", default-features = false, features = ["mysql","runtime-tokio-rustls"]}
 dotenv = "0.15"
-cached = "0.46"
+cached = "0.51"

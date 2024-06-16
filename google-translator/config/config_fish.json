@@ -2,7 +2,8 @@
     "file":"lang.json",
     "from":"zh-CN",
     "json_key":"ZH",
-    "https_proxy":"socks5://8.217.7.158:3081",
+    "https_proxy":"",
+    "sigle_file": true,
     "translate":[
         {
             "to":"en",
