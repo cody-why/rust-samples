@@ -1,0 +1,9 @@
+[package]
+name = "readyset"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+sqlx = { version = "0.7", default-features = false, features = ["postgres", "runtime-tokio-rustls"] }
+anyhow = "1"

@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Copy, Default)]
 pub enum InputLang {
     #[default]
@@ -326,9 +328,8 @@ impl From<&str> for InputLang {
         }
     }
 }
-
-impl ToString for InputLang {
-    fn to_string(&self) -> String {
+impl Display for InputLang {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let lang = match self {
             InputLang::Auto => "auto",
             InputLang::Galego => "gl",
@@ -465,6 +466,6 @@ impl ToString for InputLang {
             InputLang::Hebrew => "iw",
             InputLang::Hindi => "hi",
         };
-        lang.to_owned()
+        write!(f, "{}", lang)
     }
 }

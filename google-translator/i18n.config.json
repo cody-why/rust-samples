@@ -1,0 +1,69 @@
+{
+  "file": "lang.json",
+  "from": "zh-CN",
+  "json_key": "ZH",
+  "https_proxy": "",
+  "sigle_file": false,
+  "translate": [
+    {
+      "json_key": "EN",
+      "t": "英文",
+      "to": "en"
+    },
+    {
+      "json_key": "TW",
+      "t": "繁体中文",
+      "to": "zh-TW"
+    },
+    {
+      "json_key": "VN",
+      "t": "越南",
+      "to": "vi"
+    },
+    {
+      "json_key": "JA",
+      "t": "日文",
+      "to": "ja"
+    },
+    {
+      "json_key": "KO",
+      "t": "韩文",
+      "to": "ko"
+    },
+    {
+      "json_key": "MS",
+      "t": "马来",
+      "to": "ms"
+    },
+    {
+      "json_key": "TH",
+      "t": "泰国",
+      "to": "th"
+    },
+    {
+      "json_key": "ID",
+      "t": "印度尼西亚",
+      "to": "id"
+    },
+    {
+      "json_key": "HI",
+      "t": "印地语",
+      "to": "hi"
+    },
+    {
+      "json_key": "PT",
+      "t": "葡萄牙语",
+      "to": "pt"
+    },
+    {
+      "json_key": "FR",
+      "t": "法语",
+      "to": "fr"
+    },
+    {
+      "json_key": "AR",
+      "t": "阿拉伯语",
+      "to": "ar"
+    }
+  ]
+}

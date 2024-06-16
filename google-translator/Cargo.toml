@@ -10,18 +10,26 @@ edition = "2021"
 # google_translator = "0.2.2"
 # env_logger = "0.10.0"
 # rustlate = "1.0.0"
-reqwest = {version = "0.11", default-features = false, features = ["blocking","socks","rustls-tls"]}
+reqwest = {version = "0.12", default-features = false, features = ["blocking","socks","rustls-tls"]}
 tl = "0.7"
 serde = {version = "1",features = ["derive"]}
 serde_json = "1"
-serde_yaml = "0.9"
+# serde_yaml = "0.9"
 
 rayon="1"
-indexmap = {version = "2.1", features = ["serde","rayon"]}
+indexmap = {version = "2.2", features = ["serde","rayon"]}
 html-escape = "0.2.13"
+clap = { version = "4.5.7", features = ["derive"] }
 
 [profile.release]
-opt-level = "z"
-lto = true
-strip = true
+# opt-level = "z"
+# lto = true
+# strip = true
+opt-level = "s"       # 优化代码尺寸，兼顾速度
+lto = "fat"           # 启用最大程度的链接时优化
+codegen-units = 1     # 降低代码生成单元数，增加优化时间但提升性能
+panic = "abort"       # 使用 'abort' 而不是 'unwind' 来处理 panic
+strip = "symbols"     # 移除符号信息，保留必要的调试信息
+
+
 

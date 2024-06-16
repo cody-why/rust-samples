@@ -1,7 +1,7 @@
 /*
  * @Author: plucky
  * @Date: 2023-03-05 01:48:56
- * @LastEditTime: 2024-03-22 18:37:52
+ * @LastEditTime: 2024-06-16 19:55:09
  * @Description: 
  */
 
@@ -71,7 +71,7 @@ fn parse_result(result: Result<String, String>) -> Result<String, String> {
 #[test]
 fn test1(){
     // https://translate.google.com/m?tl=en&sl=zh-Cn&q=真可惜&hl=en
-    std::env::set_var("https_proxy", "socks5://8.217.7.158:3081");
+    std::env::set_var("https_proxy", "socks5://18.217.7.158:1081");
     match translate("zh-Cn", "en", "真可惜") {
         Ok(translated) => println!("Result: {}", translated),
         Err(_) => println!("Something wrong...")

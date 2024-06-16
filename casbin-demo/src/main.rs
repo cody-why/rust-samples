@@ -2,12 +2,12 @@
  * @Author: plucky
  * @Date: 2022-07-04 13:45:05
  * @LastEditTime: 2022-07-06 16:24:47
- * @Description: casbin的测试,在线生成规则:
- * https://casbin.org/zh-CN/editor
+ * casbin在线生成规则:
+ * https://casbin.org/zh/editor/
  */
 
 use std::env;
-
+use casbin_demo::vec_string;
 use sqlx_adapter::casbin::prelude::*;
 use sqlx_adapter::casbin::Result;
 use sqlx_adapter::{
@@ -15,15 +15,14 @@ use sqlx_adapter::{
     SqlxAdapter,
 };
 
-const MODEL_AUTH: &str = include_str!("auth_model.conf");
 
 #[tokio::main]
 async fn main() -> Result<()> {
     // 解析.env文件
     dotenv::dotenv().ok();
-
-    let m = DefaultModel::from_str(MODEL_AUTH).await?;
-    let a = SqlxAdapter::new(env::var("DATABASE_URL").unwrap(), 5).await?;
+    let model_auth: &str = include_str!("../conf/auth_model.conf");
+    let m = DefaultModel::from_str(model_auth).await?;
+    let a = SqlxAdapter::new(env::var("DATABASE_URL").unwrap(), 8).await?;
 
     println!("get_model:{:?}", m.get_model().keys()); //["r", "e", "m", "p", "g"]
 
@@ -38,10 +37,10 @@ async fn main() -> Result<()> {
     });
     e.load_policy().await?;
 
-    // e.remove_policy(to_owned(vec!["*", "/login", "*"])).await.unwrap_or_default();
+    // e.remove_policy((vec!["*", "/login", "*"])).await.unwrap_or_default();
     // 添加角色admin,member
-    e.add_policy(to_owned(vec!["admin", "*", "*"])).await.unwrap_or_default();
-    e.add_policy(to_owned(vec!["member", "/member", "*"])).await.unwrap_or_default();
+    e.add_policy(vec_string!["admin", "*", "*"]).await.unwrap_or_default();
+    e.add_policy(vec_string!["member", "/member", "*"]).await.unwrap_or_default();
     
     println!("get_all_policy: {:?}", e.get_all_policy());
     //[["p", "p", "*", "/login", "*"], ["p", "p", "admin", "*", "*"], ["p", "p", "member", "/member", "*"]
@@ -53,7 +52,7 @@ async fn main() -> Result<()> {
     // ["*", "admin", "member"]
     
     // 添加g2,domain是租户
-    // e.add_named_grouping_policy("g", to_owned(vec!["alice", "admin"])).await.unwrap_or_default();
+    // e.add_named_grouping_policy("g", (vec!["alice", "admin"])).await.unwrap_or_default();
     let added = e.add_role_for_user("alice", "admin", None).await.unwrap_or_else(|e| {
         println!("add_role_for_user error:{:?}", e);
         false
@@ -96,9 +95,6 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-pub fn to_owned(v: Vec<&str>) -> Vec<String> {
-    v.into_iter().map(|x| x.to_owned()).collect()
-}
 
 #[cfg(test)]
 mod tests {
