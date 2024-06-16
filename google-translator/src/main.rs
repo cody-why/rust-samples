@@ -1,6 +1,6 @@
 /*
  * @Date: 2023-03-02 17:12:50
- * @LastEditTime: 2024-06-16 22:12:21
+ * @LastEditTime: 2024-06-16 22:24:50
  * @Description: cargo build --release --target x86_64-pc-windows-gnu
  */
 
@@ -27,7 +27,7 @@ pub struct Config {
     pub https_proxy: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Default)]
 pub struct Translate {
     pub to: String,
     pub json_key: String,

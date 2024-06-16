@@ -47,7 +47,11 @@ pub fn process(config: Config) {
             }
         });
         // 写到文件
-        let file_name = format!("{}.json", t.json_key);
+        let file_name = if t.json_key.is_empty() {
+            format!("{}.json", t.to)
+        }else {
+            format!("{}.json", t.json_key)
+        };
         let json = serde_json::to_string_pretty(&*s_map).unwrap();
         write_all(file_name, json);
     });
