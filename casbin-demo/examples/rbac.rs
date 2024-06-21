@@ -50,15 +50,15 @@ async fn  main()->Result<()> {
     // e.delete_role_for_user("alice", "admin", None).await?;
 
     // 获取所有策略(表中所有数据)
-    println!("get_all_policy: {:?}",e.get_all_policy());
+    println!("所有数据: {:?}",e.get_all_policy());
     //[["p", "p", "*", "/login", "*"], ["p", "p", "admin", "*", "*"], ["p", "p", "member", "/member", "*"]
     
     // 获取所有角色 ["*", "admin", "member"]
-    println!("get_all_subjects: {:?}",e.get_all_subjects());
+    println!("所有角色: {:?}",e.get_all_subjects());
     // 获取所有权限菜单 ["/login", "*", "/member"]
-    println!("get_all_objects: {:?}",e.get_all_objects());
-    // 获取所有角色(只输出设置了用户的角色) ["member"]
-    println!("get_all_roles: {:?}",e.get_all_roles());
+    println!("所有权限菜单: {:?}",e.get_all_objects());
+    // 获取有用户的角色 ["member"]
+    println!("有用户的角色: {:?}",e.get_all_roles());
 
     // 获取alice的角色 ["member"]
     let roles = e.get_roles_for_user("alice", None);

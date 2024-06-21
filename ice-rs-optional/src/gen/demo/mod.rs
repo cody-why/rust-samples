@@ -29,10 +29,7 @@ impl ToBytes for NumberType {
     }
 }
 impl FromBytes for NumberType {
-    fn from_bytes(
-        bytes: &[u8],
-        read_bytes: &mut i32,
-    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>>
+    fn from_bytes(bytes: &[u8], read_bytes: &mut i32) -> Result<Self, Box<dyn std::error::Error + Send + Sync>>
     where
         Self: Sized,
     {
@@ -77,10 +74,7 @@ impl ToBytes for Contact {
     }
 }
 impl FromBytes for Contact {
-    fn from_bytes(
-        bytes: &[u8],
-        read_bytes: &mut i32,
-    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>>
+    fn from_bytes(bytes: &[u8], read_bytes: &mut i32) -> Result<Self, Box<dyn std::error::Error + Send + Sync>>
     where
         Self: Sized,
     {
@@ -92,16 +86,15 @@ impl FromBytes for Contact {
         let flags = SliceFlags::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?;
         match flags.type_id {
             SliceFlagsTypeEncoding::StringTypeId => {
-                let _slice_name =
-                    String::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?;
-            }
+                let _slice_name = String::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?;
+            },
             SliceFlagsTypeEncoding::CompactTypeId => {
                 todo!()
-            }
+            },
             SliceFlagsTypeEncoding::IndexTypeId => {
                 todo!()
-            }
-            SliceFlagsTypeEncoding::NoTypeId => {}
+            },
+            SliceFlagsTypeEncoding::NoTypeId => {},
         }
         let name = String::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?;
         let mut r#type = None;
@@ -115,23 +108,14 @@ impl FromBytes for Contact {
             let flag = OptionalFlag::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?;
             match flag.tag {
                 1u8 => {
-                    r#type = Some(NumberType::from_bytes(
-                        &bytes[read as usize..bytes.len()],
-                        &mut read,
-                    )?);
-                }
+                    r#type = Some(NumberType::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?);
+                },
                 2u8 => {
-                    number = Some(String::from_bytes(
-                        &bytes[read as usize..bytes.len()],
-                        &mut read,
-                    )?);
-                }
+                    number = Some(String::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?);
+                },
                 3u8 => {
-                    dial_group = Some(i32::from_bytes(
-                        &bytes[read as usize..bytes.len()],
-                        &mut read,
-                    )?);
-                }
+                    dial_group = Some(i32::from_bytes(&bytes[read as usize..bytes.len()], &mut read)?);
+                },
                 _ => {
                     if flags.last_slice {
                         return Err(Box::new(ProtocolError::new("Last slice not expected")));
@@ -139,7 +123,7 @@ impl FromBytes for Contact {
                         read = read - 1;
                         break;
                     }
-                }
+                },
             }
         }
         let obj = Self {
@@ -210,11 +194,7 @@ pub trait ContactDBI {
         context: Option<HashMap<String, String>>,
     ) -> ();
     async fn query(&mut self, name: &String, context: Option<HashMap<String, String>>) -> Contact;
-    async fn query_number(
-        &mut self,
-        name: &String,
-        context: Option<HashMap<String, String>>,
-    ) -> Option<String>;
+    async fn query_number(&mut self, name: &String, context: Option<HashMap<String, String>>) -> Option<String>;
     async fn query_dialgroup(
         &mut self,
         name: &String,
@@ -250,7 +230,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(self.ice_is_a(&param).await.to_bytes()?),
                 })
-            }
+            },
             "addContact" => {
                 let mut read_bytes = 0;
                 let name = String::from_bytes(
@@ -268,13 +248,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 1u8 {
                             r#type = Option::<NumberType>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let mut flag_bytes = 0;
                 match OptionalFlag::from_bytes(
@@ -284,13 +263,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 2u8 {
                             number = Option::<String>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let mut flag_bytes = 0;
                 match OptionalFlag::from_bytes(
@@ -300,13 +278,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 3u8 {
                             dial_group = Option::<i32>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let result = self
                     .server_impl
@@ -319,7 +296,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             "updateContact" => {
                 let mut read_bytes = 0;
                 let name = String::from_bytes(
@@ -337,13 +314,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 1u8 {
                             r#type = Option::<NumberType>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let mut flag_bytes = 0;
                 match OptionalFlag::from_bytes(
@@ -353,13 +329,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 2u8 {
                             number = Option::<String>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let mut flag_bytes = 0;
                 match OptionalFlag::from_bytes(
@@ -369,13 +344,12 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 3u8 {
                             dial_group = Option::<i32>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
                 let result = self
                     .server_impl
@@ -388,7 +362,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             "query" => {
                 let mut read_bytes = 0;
                 let name = String::from_bytes(
@@ -403,7 +377,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             "queryNumber" => {
                 let mut read_bytes = 0;
                 let name = String::from_bytes(
@@ -418,7 +392,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             "queryDialgroup" => {
                 let mut read_bytes = 0;
                 let name = String::from_bytes(
@@ -434,18 +408,14 @@ impl IceObjectServer for ContactDBServer {
                     Ok(flag) => {
                         if flag.tag == 1u8 {
                             dial_group = Option::<i32>::from_bytes(
-                                &request.params.data
-                                    [read_bytes as usize..request.params.data.len()],
+                                &request.params.data[read_bytes as usize..request.params.data.len()],
                                 &mut read_bytes,
                             )?;
                         }
-                    }
-                    _ => {}
+                    },
+                    _ => {},
                 }
-                let result = self
-                    .server_impl
-                    .query_dialgroup(&name, &mut dial_group, None)
-                    .await;
+                let result = self.server_impl.query_dialgroup(&name, &mut dial_group, None).await;
                 let wrapped_result = result;
                 let mut result = wrapped_result.to_bytes()?;
                 result.extend(OptionalWrapper::new(1u8, dial_group).to_bytes()?);
@@ -454,7 +424,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             "shutdown" => {
                 let result = self.server_impl.shutdown(None).await;
                 let wrapped_result = result;
@@ -464,7 +434,7 @@ impl IceObjectServer for ContactDBServer {
                     status: 0,
                     body: Encapsulation::from(result),
                 })
-            }
+            },
             _ => Err(Box::new(ProtocolError::new("Operation not found"))),
         }
     }
@@ -535,12 +505,7 @@ impl ContactDB for ContactDBPrx {
             bytes.extend(value.to_bytes()?);
         }
         self.proxy
-            .dispatch::<ProtocolError>(
-                &String::from("addContact"),
-                0u8,
-                &Encapsulation::from(bytes),
-                context,
-            )
+            .dispatch::<ProtocolError>(&String::from("addContact"), 0u8, &Encapsulation::from(bytes), context)
             .await?;
         Ok(())
     }
@@ -585,12 +550,7 @@ impl ContactDB for ContactDBPrx {
         bytes.extend(name.to_bytes()?);
         let reply = self
             .proxy
-            .dispatch::<ProtocolError>(
-                &String::from("query"),
-                0u8,
-                &Encapsulation::from(bytes),
-                context,
-            )
+            .dispatch::<ProtocolError>(&String::from("query"), 0u8, &Encapsulation::from(bytes), context)
             .await?;
         let mut read_bytes: i32 = 0;
         Contact::from_bytes(
@@ -607,12 +567,7 @@ impl ContactDB for ContactDBPrx {
         bytes.extend(name.to_bytes()?);
         let reply = self
             .proxy
-            .dispatch::<ProtocolError>(
-                &String::from("queryNumber"),
-                0u8,
-                &Encapsulation::from(bytes),
-                context,
-            )
+            .dispatch::<ProtocolError>(&String::from("queryNumber"), 0u8, &Encapsulation::from(bytes), context)
             .await?;
         let mut read_bytes: i32 = 0;
         Option::<String>::from_bytes(
@@ -650,27 +605,18 @@ impl ContactDB for ContactDBPrx {
     ) -> Result<(), Box<dyn std::error::Error + Send + Sync>> {
         let bytes = Vec::new();
         self.proxy
-            .dispatch::<ProtocolError>(
-                &String::from("shutdown"),
-                0u8,
-                &Encapsulation::from(bytes),
-                context,
-            )
+            .dispatch::<ProtocolError>(&String::from("shutdown"), 0u8, &Encapsulation::from(bytes), context)
             .await?;
         Ok(())
     }
 }
 impl ContactDBPrx {
     #[allow(dead_code)]
-    pub async fn unchecked_cast(
-        proxy: Proxy,
-    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn unchecked_cast(proxy: Proxy) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         Ok(Self { proxy: proxy })
     }
     #[allow(dead_code)]
-    pub async fn checked_cast(
-        proxy: Proxy,
-    ) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
+    pub async fn checked_cast(proxy: Proxy) -> Result<Self, Box<dyn std::error::Error + Send + Sync>> {
         let mut my_proxy = Self::unchecked_cast(proxy).await?;
         if !my_proxy.ice_is_a().await? {
             return Err(Box::new(ProtocolError::new("ice_is_a() failed")));
