@@ -3,7 +3,7 @@
   "from": "zh-CN",
   "json_key": "ZH",
   "https_proxy": "",
-  "sigle_file": false,
+  "single_file": false,
   "translate": [
     {
       "json_key": "EN",

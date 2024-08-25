@@ -19,7 +19,7 @@ pub use translator::*;
 
 #[derive(Debug, Deserialize, Default)]
 pub struct Config {
-    pub sigle_file: bool,
+    pub single_file: bool,
     pub file: String,
     pub from: String,
     pub json_key: String,
@@ -33,7 +33,7 @@ pub struct Translate {
     pub json_key: String,
 }
 
-static DEFAULT_CONFIG:&str = include_str!("../tl.config.json");
+static DEFAULT_CONFIG: &str = include_str!("../tl.config.json");
 // sock5代理需要设置环境变量, reqwest打开socks feature
 // export https_proxy=socks5://xxx.xx.xx.xx:8080
 fn main() {
@@ -42,20 +42,18 @@ fn main() {
     let file = "tl.config.json";
     let file_name = args.config.unwrap_or(file.to_string());
     if args.init {
-        
         let map: IndexMap<String, Value> = serde_json::from_str(DEFAULT_CONFIG).unwrap();
         let json = serde_json::to_string_pretty(&map).unwrap();
         File::create(file_name).unwrap().write_all(json.as_bytes()).unwrap();
-        println!("Config file created: {:?}", file );
+        println!("Config file created: {:?}", file);
         return;
-
     }
-    
+
     println!("Config file: {}", file_name);
     let config: Config = serde_json::from_reader(File::open(file_name).unwrap()).unwrap();
     println!("{:?}", config);
 
-    if config.sigle_file {
+    if config.single_file {
         single::process(config);
     } else {
         multiple::process(config);
@@ -86,7 +84,6 @@ fn get_path() -> std::path::PathBuf {
     } else {
         ".".parse().unwrap()
     }
-
 }
 
 /// Simple translate text
