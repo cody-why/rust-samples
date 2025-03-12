@@ -1,7 +1,0 @@
-entries:
-  default:
-    protocol: thrift
-    filename: volo_gen.rs
-    idls:
-    - source: local
-      path: ../idl/volo_example.thrift

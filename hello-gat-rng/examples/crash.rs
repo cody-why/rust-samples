@@ -20,11 +20,11 @@ fn main() {
             let i = (v * 10.0).floor() as usize % 10;
             // println!("a{}: {}", v, i);
             sum_l[i] += 1;
-        }else if *v < 3.0{
+        } else if *v < 3.0 {
             // 统计2.0到3.0之间的个数
             let i = (v * 10.0).floor() as usize % 10;
             sum_2[i] += 1;
-        }else if *v < 4.0{
+        } else if *v < 4.0 {
             // 统计2.0到3.0之间的个数
             let i = (v * 10.0).floor() as usize % 10;
             sum_3[i] += 1;
@@ -39,12 +39,11 @@ fn main() {
                 i = 10;
             }
             // println!("{}: {}", v, i);
-            sum_t[i-1] += 1;
-        }else {
+            sum_t[i - 1] += 1;
+        } else {
             // 统计1到10
-            sum[i-1] += 1;
+            sum[i - 1] += 1;
         }
-        
     });
 
     println!("1到10的统计:{:?}", sum);
@@ -53,7 +52,7 @@ fn main() {
 
     // 输出1-10的概率
     sum.iter().enumerate().for_each(|(i, v)| {
-        println!("{}: {} ", i+1, *v as f32 / total);
+        println!("{}: {} ", i + 1, *v as f32 / total);
     });
     println!();
     println!("1.0到2.0: {:?}", sum_l);
@@ -62,36 +61,35 @@ fn main() {
     // 输出1.0到2.0概率
     let total = sum_l.iter().sum::<i32>() as f32;
     sum_l.iter().enumerate().for_each(|(i, v)| {
-        println!("{}: {} ", i+1, *v as f32 / total);
+        println!("{}: {} ", i + 1, *v as f32 / total);
     });
-    
 }
 
 // 1到10的统计:[63, 15, 9, 4, 4, 2, 2, 2, 1, 1]
 // 10到100的统计:[8, 1, 2, 3, 0, 0, 0, 0, 0, 1]
-// 1: 0.53846157 
-// 2: 0.12820514 
-// 3: 0.07692308 
-// 4: 0.034188036 
-// 5: 0.034188036 
-// 6: 0.008547009 
-// 7: 0.017094018 
-// 8: 0.017094018 
-// 9: 0.008547009 
-// 10: 0.017094018 
+// 1: 0.53846157
+// 2: 0.12820514
+// 3: 0.07692308
+// 4: 0.034188036
+// 5: 0.034188036
+// 6: 0.008547009
+// 7: 0.017094018
+// 8: 0.017094018
+// 9: 0.008547009
+// 10: 0.017094018
 
 // 1.0到2.0: [10, 9, 9, 8, 4, 8, 8, 4, 2, 1]
 // 2.0到3.0[3, 3, 1, 2, 0, 3, 0, 1, 0, 2]
 // 3.0到4.0[0, 0, 1, 0, 2, 3, 0, 1, 1, 1]
-// 1: 0.15873016 
-// 2: 0.14285715 
-// 3: 0.14285715 
-// 4: 0.12698413 
-// 5: 0.06349207 
-// 6: 0.12698413 
-// 7: 0.12698413 
-// 8: 0.06349207 
-// 9: 0.031746034 
+// 1: 0.15873016
+// 2: 0.14285715
+// 3: 0.14285715
+// 4: 0.12698413
+// 5: 0.06349207
+// 6: 0.12698413
+// 7: 0.12698413
+// 8: 0.06349207
+// 9: 0.031746034
 // 10: 0.015873017
 
 #[test]
@@ -105,22 +103,22 @@ fn test() {
     println!("=={}", sum / 100.0);
 }
 
-
+#[allow(unused)]
 fn weighted_random() -> f32 {
+    use rand::distr::Distribution;
+    use rand::distr::Uniform;
     use rand::Rng;
-    use rand::distributions::{Distribution, Uniform};
-    let mut rng = rand::thread_rng();
-    let uniform = Uniform::new(1.0, 100.0);
+    let mut rng = rand::rng();
+    let uniform = Uniform::new(1.0, 100.0).unwrap();
 
     // let min = |x, y| if x < y { x } else { y };
-    if rng.gen_range(1..3) == 1{
+    if rng.random_range(1..3) == 1 {
         println!("===========");
-        return rng.gen_range(1.01..1.20);
+        return rng.random_range(1.01..1.20);
     }
     let mut number = uniform.sample(&mut rng);
-    while rng.gen::<f32>() > 1.0 / (number*number) {
+    while rng.random::<f32>() > 1.0 / (number * number) {
         number = uniform.sample(&mut rng);
     }
     number
-    
 }

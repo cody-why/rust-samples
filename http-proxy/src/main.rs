@@ -27,7 +27,7 @@ fn setup_logging() -> Result<(), Box<dyn std::error::Error>> {
         .format(|out, message, record| {
             out.finish(format_args!(
                 "{}[{}][{}:{}] {}",
-                chrono::Local::now().format("[%Y-%m-%d][%H:%M:%S]"),
+                chrono::Local::now().format("[%Y-%m-%d %H:%M:%S]"),
                 record.level(),
                 record.target(),
                 record.line().unwrap_or(0),
